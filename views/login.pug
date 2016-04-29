@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  .container
+  h1 Login Page
+  br
+  form(role='form')
+    .form-group
+      input.form-control(type='text',ng-model='username',placeholder='Enter a valid username')
+    .form-group
+      input.form-control(type='text',ng-model='password',placeholder='Enter a valid password')
+    button.btn.btn-default(ng-click="login()") Login
+
+
+    a(href='/') 
+      button.btn.btn-primary(type='button') Volver
+      

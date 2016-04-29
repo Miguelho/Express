@@ -1,0 +1,17 @@
+doctype html
+html(ng-app='passportLocal')
+  head
+    title= title
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css', rel='stylesheet', media='screen')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body(ng-controller='mainController')
+    block content
+
+  script(src='http://code.jquery.com/jquery.js')
+  script(src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+  script(src='http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js')
+  script(src='javascripts/Angular/core.js')
+  script(src='javascripts/Angular/angular-route.min.js')
+  script(src='http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.13/angular-ui-router.min.js')
+  script(src='//cdn.rawgit.com/auth0/angular-storage/master/dist/angular-storage.js')

@@ -1,126 +1,158 @@
 'use strict';
-var app= angular.module('passportLocal', ['ngRoute','angular-storage', 'ui.router']);
+var app= angular.module('passportLocal', ['ui.router']);
 
-app.service('UserService', function(store) {
-        var service = this,
-            currentUser = null;
-}).service('APIInterceptor', function($rootScope, UserService) {
-        var service = this;
-}).service('APIInterceptor', function($rootScope, UserService) {
-        var service = this;
-}).service('APIInterceptor', function($rootScope, UserService) {
-        var service = this;
-});
-app.config(['$stateProvider','$urlRouterProvider','$httpProvider',function($stateProvider, $urlRouterProvider, $httpProvider) {
-        $stateProvider
-            .state('login', {
-                url: '/login',
-                templateUrl: 'app/templates/login.tmpl.html',
-                controller: 'LoginCtrl',
-                controllerAs: 'login'
-            })
-            .state('dashboard', {
-                url: '/dashboard',
-                templateUrl: 'app/templates/dashboard.tmpl.html',
-                controller: 'DashboardCtrl',
-                controllerAs: 'dashboard'
-            });
-         /*
-   Response interceptors are stored inside the 
-   $httpProvider.responseInterceptors array.
-   To register a new response interceptor is enough to add 
-   a new function to that array.
-  */
+app.config(['$httpProvider','$locationProvider','$stateProvider','$urlRouterProvider',
+ function($httpProvider,$locationProvider,$stateProvider,$urlRouterProvider) {
 
-  $httpProvider
-    .responseInterceptors.push(['$q', function($q) {
 
-    // More info on $q: docs.angularjs.org/api/ng.$q
-    // Of course it's possible to define more dependencies.
+    $stateProvider
+        .state('outside', {
+    url: '/outside',
+    abstract: true,
+    templateUrl: 'templates/outside.html'
+    })
+        .state('outside.login', {
+    url: '/login',
+    templateUrl: 'templates/login.html',
+    controller: 'LoginCtrl'
+    })
+        .state('outside.register', {
+    url: '/register',
+    templateUrl: 'templates/register.html',
+    controller: 'RegisterCtrl'
+    })
+        .state('inside', {
+    url: '/login#/',
+    templateUrl: 'index.html'
+    /*,
+    templateUrl: 'templates/inside.html',
+    controller: 'InsideCtrl'*/
+    });
 
-    return function(promise) {
+    $urlRouterProvider.when('/',{
+        redirectTo:'/'
+    });
+    
+    $urlRouterProvider.otherwise('/outside/login');
+  
+    /*$routeProvider app.config([,'$routeProvider'
+    function(,$routeProvider
+        .when('/',{
+            redirectTo:'/'
+        })
+        .otherwise('/ping.html');*/
+        // use the HTML5 History API
+        //$locationProvider.html5Mode(true); //standardized way to manipulate browser history using a script, lets angular
+        //cambiar el ruteo y las urls sin refrescar la pagina
 
-      /*
-       The promise is not resolved until the code defined
-       in the interceptor has not finished its execution.
-      */
+    $httpProvider.interceptors.push(function($q,$location) {
 
-      return promise.then(function(response) {
+        return {
+            'request': function(config) {
+            // do something on success
+            //alert(config)
+            return config;
+            },
+            'response':function(response){
+                //console.dir(response);
+                //console.log($location.path());
+                return response;
+            },'responseError': function(rejection){
 
-        // response.status >= 200 && response.status <= 299
-        // The http request was completed successfully.
+                var defer = $q.defer(); //Instancia de un objeto deferred
 
-        /*
-         Before to resolve the promise 
-         I can do whatever I want!
-         For example: add a new property 
-         to the promise returned from the server.
-        */
+                if(rejection.status == 401){
+                    console.dir(rejection);
+                    $location.url('/');
+                }
+                if(rejection.status == 500){
+                    console.dir(rejection);
+                    $location.url('/');
+                }
+                if(rejection.status == 301){
+                    console.dir(rejection)
+                }
+                defer.reject(rejection); //defer.reject(reason), rechaza la promesa derivada con una razón. Equvialente
+                //a resolverlo con una rejection construida así $q.reject
 
-        response.data.extra = 'Interceptor strikes back';
+                return defer.promise; //retorna una instancia de nueva promesa, esta permite a la página y otross servicios asociados
+                //ganar acceso al resultado de las tareas deferred cuando se completan
 
-        // ... or even something smarter.
+            }
+        };
+    });
 
-        /*
-         Return the execution control to the 
-         code that initiated the request.
-        */
-
-        return response; 
-
-      }, function(response) {
-
-        // The HTTP request was not successful.
-
-        /*
-         It's possible to use interceptors to handle 
-         specific errors. For example:
-        */
-
-        if (response.status === 401) {
-
-          // HTTP 401 Error: 
-          // The request requires user authentication
-
-          response.data = { 
-            status: false, 
-            description: 'Authentication required!'
-          };
-
-          return response;
-
-        }
-
-        /*
-         $q.reject creates a promise that is resolved as
-         rejectedwith the specified reason. 
-         In this case the error callback will be executed.
-        */
-
-        return $q.reject(response);
-
-      });
-
-    }
-
-  }]);
 }]);
 
 
-app.controller('mainController',function($scope,$http,$location){
+
+app.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
+  $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
+    if (!AuthService.isAuthenticated()) {
+      console.log(next.name);
+      if (next.name !== 'outside.login' && next.name !== 'outside.register') {
+        event.preventDefault();
+        $state.go('outside.login');
+      }
+    }
+  });
+});
+//app.controller() para la conexión entre nuestros servicios y la vista HTML
+app.controller('mainController',function($scope,$http,$location,$window,AuthService,$state){
 	$scope.formData={};
     $scope.authors={};
     $scope.serverResponse=String("");
     console.log("mainController loaded");
 
-    $scope.login = function(){
-        alert("hello... it's me");
-    };
 
+    $scope.login = function() {
+    AuthService.login(angular.toJson(getDataFromRegisterForm()))
+    .then(
+        function successCallback(msg) {
+            $state.go('inside');
+            console.log("estado "+ $state);
+    }, function errorCallback(errMsg) {
+        console.log("erroraco")
+      var alertPopup = alert({
+        title: 'Login failed!',
+        template: errMsg
+      });
+    });
+    };
+    
+    //pre Devdactic
+    /*$scope.login = function(){
+        $http({method:'POST',
+            url:'/login',
+            data: angular.toJson(getDataFromRegisterForm()),
+            headers:{'Content-Type':'application/json'}
+        }).then(function successCallback(response) {
+                if(!response['status'])
+                    console.log("Servers says to go to root directory!")
+                else{
+                    $scope.serverResponse=String("logeado!");
+                    console.log(response.redirect);
+                    //$window.location.href=data.redirect;
+
+                }
+                    //$window.location.href='/'; redirige sí, pero sin tener en cuenta la renderización con user
+            },function errorCallback(response){
+                $scope.serverResponse=response.data;
+                //$location.url('/');
+            }
+        ).catch(function(err){
+            $scope.serverResponse=err.message;
+        });
+    };*/
+            /*
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+            */
     $scope.signup = function(){
-        $http.post('/register', angular.toJson(getDataFromRegisterForm()))
+        $http.post('/register',angular.toJson(getDataFromRegisterForm()),{'Content-Type':'application/json'} )
             .success(function(data) {
-               $location.path('/');
+               $location.url('/');
             })
             .error(function(data) {
                 console.log('Error: ' + data);
@@ -163,8 +195,7 @@ app.controller('mainController',function($scope,$http,$location){
         authors={"nombre":"pene"};
         $scope.serverResponse="IT GIRL";
         console.log("authors");
-    }
-    ;
+    };
     $scope.getAutorByName =function(){
         var keyword = $scope.keyword;
 
@@ -176,7 +207,7 @@ app.controller('mainController',function($scope,$http,$location){
             console.log('Error: ' + data);
         });
     };
-
+/*
 	$scope.insertAuthor = function() {
         $http.post('/authors/', getDataFromForm())
             .success(function(data) {
@@ -240,6 +271,6 @@ app.controller('mainController',function($scope,$http,$location){
             nationality:$scope.nationality}); 
         return data;
     }
-
+*/
 
 });

@@ -1,0 +1,104 @@
+app.service('UserService', function(store) {
+        var service = this,
+            currentUser = null;
+}).service('APIInterceptor', function($rootScope, UserService) {
+        var service = this;
+}).service('APIInterceptor', function($rootScope, UserService) {
+        var service = this;
+}).service('APIInterceptor', function($rootScope, UserService) {
+        var service = this;
+});
+app.config(['$stateProvider','$urlRouterProvider','$httpProvider',function($stateProvider, $urlRouterProvider, $httpProvider) {
+        $stateProvider
+            .state('login', {
+                url: '/login',
+                templateUrl: 'app/templates/login.tmpl.html',
+                controller: 'LoginCtrl',
+                controllerAs: 'login'
+            })
+            .state('dashboard', {
+                url: '/dashboard',
+                templateUrl: 'app/templates/dashboard.tmpl.html',
+                controller: 'DashboardCtrl',
+                controllerAs: 'dashboard'
+            });
+         /*
+   Response interceptors are stored inside the 
+   $httpProvider.responseInterceptors array.
+   To register a new response interceptor is enough to add 
+   a new function to that array.
+  */
+
+  $httpProvider
+    .responseInterceptors.push(['$q', function($q) {
+
+    // More info on $q: docs.angularjs.org/api/ng.$q
+    // Of course it's possible to define more dependencies.
+
+    return function(promise) {
+
+      /*
+       The promise is not resolved until the code defined
+       in the interceptor has not finished its execution.
+      */
+
+      return promise.then(function(response) {
+
+        // response.status >= 200 && response.status <= 299
+        // The http request was completed successfully.
+
+        /*
+         Before to resolve the promise 
+         I can do whatever I want!
+         For example: add a new property 
+         to the promise returned from the server.
+        */
+
+        response.data.extra = 'Interceptor strikes back';
+
+        // ... or even something smarter.
+
+        /*
+         Return the execution control to the 
+         code that initiated the request.
+        */
+
+        return response; 
+
+      }, function(response) {
+
+        // The HTTP request was not successful.
+
+        /*
+         It's possible to use interceptors to handle 
+         specific errors. For example:
+        */
+
+        if (response.status === 401) {
+
+          // HTTP 401 Error: 
+          // The request requires user authentication
+
+          response.data = { 
+            status: false, 
+            description: 'Authentication required!'
+          };
+
+          return response;
+
+        }
+
+        /*
+         $q.reject creates a promise that is resolved as
+         rejectedwith the specified reason. 
+         In this case the error callback will be executed.
+        */
+
+        return $q.reject(response);
+
+      });
+
+    }
+
+  }]);
+}]);

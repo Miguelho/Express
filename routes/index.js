@@ -29,9 +29,13 @@ router.route('/register')
 router.route('/login')
 	.get(function(req, res) {
     	res.render('login', { user : req.user });
+
 	})
-	.post(passport.authenticate('local'), function(req, res) {
-    	res.redirect('/')
+	.post(passport.authenticate('local'), function(req, res, next) {
+		//console.log(req.user);
+    	//res.render('/',{user:req.user});
+    	res.status(201).send({redirect:'/ping'});
+    	
 });
 
 

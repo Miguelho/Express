@@ -60,7 +60,7 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
             return httpConfig;// envia la req, el Backend se encarga de ver si existe o no
             },
             'response':function(response){
-                //console.dir(response);
+                console.dir(response);
                 //console.log($location.path());
                 return response;
             },'responseError': function(rejection){
@@ -97,7 +97,7 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
 
 
 
-app.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
+/*app.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
   $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
     if (!AuthService.isAuthenticated()) {
       console.log(next.name);
@@ -107,7 +107,7 @@ app.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
       }
     }
   });
-});
+})*/
 
 
 function RegisterController($auth,$location,$rootScope,$scope){
@@ -116,13 +116,14 @@ function RegisterController($auth,$location,$rootScope,$scope){
     $rootScope.signup=function(){
     console.log("NO APAREZCAS!");
     $auth.signup({//$auth.signup por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor
-        email:$scope.username,
+        username:$scope.username,
         password:$scope.password
-    }).then(function(){
+    }).then(function(response){
         //Si se ha registrado correctamente, le redirige a otra ruta
+        $scope.serverResponse=response;
         $location.path('/');
     }).catch(function(response){
-        $serverResponse=response;
+        $scope.serverResponse=response;
     });
     }
 }
@@ -133,9 +134,10 @@ function LoginController($auth,$location,$rootScope,$scope){//Servicio que recoj
     $rootScope.login=function(){ //funciones que se utilizan desde las vistas
     console.log("NO APAREZCAS!");
     $auth.login({//$auth.login por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor cuando se autentica o realiza HTTP
-        email:$scope.username,
+        username:$scope.username,
         password:$scope.password
-    }).then(function(){
+    }).then(function(response){
+        $scope.serverResponse=response;
     // Si se ha logueado correctamente, lo tratamos aquí.
     // Podemos también redirigirle a una ruta
         $location.path("/private")

@@ -1,32 +1,33 @@
 'use strict';
-var app= angular.module('passportLocal', ['ui.router']);
+var app= angular.module('passportLocal', ['ui.router','satellizer']);
 
-app.config(['$httpProvider','$locationProvider','$stateProvider','$urlRouterProvider',
- function($httpProvider,$locationProvider,$stateProvider,$urlRouterProvider) {
-
-
+app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvider','$urlRouterProvider','$authProvider',
+ function($httpProvider,config,$locationProvider,$stateProvider,$urlRouterProvider,$authProvider) {
+    //http://joelhooks.com/blog/2013/07/22/the-basics-of-using-ui-router-with-angularjs/
     $stateProvider
-        .state('outside', {
-    url: '/outside',
-    abstract: true,
-    templateUrl: 'templates/outside.html'
+        .state('home', {
+    url: "/"
+    //abstract: true,
     })
-        .state('outside.login', {
+        .state('login', {
     url: '/login',
-    templateUrl: 'templates/login.html',
-    controller: 'LoginCtrl'
+    //templateUrl: 'templates/login.html',
+    controller: 'LoginController',
+    controllerAs: "login"
     })
-        .state('outside.register', {
+        .state('register', {
     url: '/register',
-    templateUrl: 'templates/register.html',
-    controller: 'RegisterCtrl'
+    //templateUrl: 'templates/register.html',
+    controller: 'RegisterController',
+    controllerAs:'register'
     })
-        .state('inside', {
-    url: '/login#/',
-    templateUrl: 'index.html'
-    /*,
-    templateUrl: 'templates/inside.html',
-    controller: 'InsideCtrl'*/
+        .state('logout', {
+    url: '/logout',
+    templateUrl:null,
+    controller:"LogoutController"
+    });
+       /* .state('private',{
+            url:'/private'
     });
 
     $urlRouterProvider.when('/',{
@@ -34,7 +35,7 @@ app.config(['$httpProvider','$locationProvider','$stateProvider','$urlRouterProv
     });
     
     $urlRouterProvider.otherwise('/outside/login');
-  
+    */
     /*$routeProvider app.config([,'$routeProvider'
     function(,$routeProvider
         .when('/',{
@@ -46,12 +47,17 @@ app.config(['$httpProvider','$locationProvider','$stateProvider','$urlRouterProv
         //cambiar el ruteo y las urls sin refrescar la pagina
 
     $httpProvider.interceptors.push(function($q,$location) {
-
+        var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
         return {
-            'request': function(config) {
+            'request': function(httpConfig) {
             // do something on success
+            var token = localStorage.getItem(tokenName); //Accede al almacenamiento local para recoger el token JWT
             //alert(config)
-            return config;
+            if(token && config.httpInterceptor){
+                token = config.authHeader === 'Authorization' ? 'Bearer ' + token : token;
+                httpConfig.headers[config.authHeader] = token; //inserta en la cabezara el token
+            }
+            return httpConfig;// envia la req, el Backend se encarga de ver si existe o no
             },
             'response':function(response){
                 //console.dir(response);
@@ -82,6 +88,11 @@ app.config(['$httpProvider','$locationProvider','$stateProvider','$urlRouterProv
         };
     });
 
+    $authProvider.loginUrl= "http://localhost:3000/login";//rutas al server
+    $authProvider.signupUrl= "http://localhost:3000/register";//rutas al server
+    $authProvider.tokenName= "token";//Nombre del token
+    $authProvider.tokenPrefix= "passportLocal";//Añade prefijo para diferenciar LocalStorage de otros. En LocalStorage: token_passportLocal
+
 }]);
 
 
@@ -97,6 +108,54 @@ app.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
     }
   });
 });
+
+
+function RegisterController($auth,$location,$rootScope,$scope){
+    console.log("RegisterController loaded");
+    var vm = this;
+    $rootScope.signup=function(){
+    console.log("NO APAREZCAS!");
+    $auth.signup({//$auth.signup por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor
+        email:$scope.username,
+        password:$scope.password
+    }).then(function(){
+        //Si se ha registrado correctamente, le redirige a otra ruta
+        $location.path('/');
+    }).catch(function(response){
+        $serverResponse=response;
+    });
+    }
+}
+function LoginController($auth,$location,$rootScope,$scope){//Servicio que recoja datos del formu
+    console.log("loginController loaded");
+    
+    var vm = this;
+    $rootScope.login=function(){ //funciones que se utilizan desde las vistas
+    console.log("NO APAREZCAS!");
+    $auth.login({//$auth.login por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor cuando se autentica o realiza HTTP
+        email:$scope.username,
+        password:$scope.password
+    }).then(function(){
+    // Si se ha logueado correctamente, lo tratamos aquí.
+    // Podemos también redirigirle a una ruta
+        $location.path("/private")
+    })
+    .catch(function(response){
+        console.dir(response);
+    // Si ha habido errores llegamos a esta parte
+    });
+    }
+}
+function LogoutController($auth, $location) {  
+    $auth.logout()
+        .then(function() {
+            // Desconectamos al usuario y lo redirijimos
+            $location.path("/")
+        });
+}
+app.controller('RegisterController',RegisterController);
+app.controller('LoginController',LoginController);
+app.controller('LogoutController',LogoutController);
 //app.controller() para la conexión entre nuestros servicios y la vista HTML
 app.controller('mainController',function($scope,$http,$location,$window,AuthService,$state){
 	$scope.formData={};
@@ -105,7 +164,7 @@ app.controller('mainController',function($scope,$http,$location,$window,AuthServ
     console.log("mainController loaded");
 
 
-    $scope.login = function() {
+    /*$scope.login = function() {
     AuthService.login(angular.toJson(getDataFromRegisterForm()))
     .then(
         function successCallback(msg) {
@@ -118,7 +177,7 @@ app.controller('mainController',function($scope,$http,$location,$window,AuthServ
         template: errMsg
       });
     });
-    };
+    };*/
     
     //pre Devdactic
     /*$scope.login = function(){
@@ -149,7 +208,7 @@ app.controller('mainController',function($scope,$http,$location,$window,AuthServ
                 console.log('Error: ' + data);
             });
             */
-    $scope.signup = function(){
+    /*$scope.signup = function(){
         $http.post('/register',angular.toJson(getDataFromRegisterForm()),{'Content-Type':'application/json'} )
             .success(function(data) {
                $location.url('/');
@@ -157,7 +216,7 @@ app.controller('mainController',function($scope,$http,$location,$window,AuthServ
             .error(function(data) {
                 console.log('Error: ' + data);
             });
-    };
+    };*/
 
     function getDataFromRegisterForm(){
         var data = ({username:$scope.username,

@@ -9,6 +9,8 @@ var users = require('./routes/users');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var mongoose=require('mongoose');
+//Tokens tokens everywhere
+var cors = require('cors');
 
 var app = express();
 
@@ -22,6 +24,8 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+//tokens tokens everywhere
+app.use(cors());
 
 app.use(passport.initialize());
 app.use(passport.session());

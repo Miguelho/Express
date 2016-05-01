@@ -1,6 +1,9 @@
 var express = require('express');
 var Account = require('../models/account.js');
 var passport = require('passport');
+//Tokens tokens everywhere
+var middleware = require('../middleware');
+var authCtrl = require('../controllers/auth.js'); 
 var router = express.Router();
 
 /* GET home page. */
@@ -12,31 +15,15 @@ router.route('/register')
 	.get(function(req, res, next) {
   		res.render('register', {});
 	})
-	.post(function(req,res,next){
-		console.log(req.body.password);
-		Account.register(new Account({username:req.body.username}),req.body.password, function(err, account) {
-        if (err) {
-            return res.render("register", {info: "Sorry. That username already exists. Try again."});
-        }
-        passport.authenticate('local')(req, res, function () {
-	    	console.log("Autenticado");
-	    	//res.render('index')
-	    	res.redirect('/');
+	.post(authCtrl.emailSignup);
 
-        });
-		});
-	});
 router.route('/login')
 	.get(function(req, res) {
     	res.render('login', { user : req.user });
-
 	})
-	.post(passport.authenticate('local'), function(req, res, next) {
-		//console.log(req.user);
-    	//res.render('/',{user:req.user});
-    	res.status(201).send({redirect:'/ping'});
+	.post(authCtrl.emailLogin);
     	
-});
+
 
 
 router.get('/logout', function(req, res) {
@@ -47,5 +34,7 @@ router.get('/logout', function(req, res) {
 router.get('/ping', function(req, res){
     res.status(200).send("pong!");
 });
+
+router.route('private', middleware.ensureAuthenticated, function(req,res){} );
 
 module.exports = router;

@@ -27,10 +27,13 @@ exports.emailLogin= function(req,res,next){
 			console.log("error de la autenticación");
 			return res.status(401).send({message:"errorRRR!"});
 		}
-		//console.log(req.user);
-    	//res.render('/',{user:req.user});
-    	console.log("logeado");
-    	return res.status(200).send({token:service.createToken(Account)})
+		if (!user) { console.log("Que te peines!");
+			return res.status(401).send({message:"errorRRR!"});
+		}else{
+			console.log("logeado");
+    		return res.status(200).send({token:service.createToken(Account)})
+    		
+		}
     	//res.status(201).send({redirect:'/ping'}
 	})(req, res);;
 };

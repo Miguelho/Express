@@ -127,16 +127,18 @@ function RegisterController($auth,$location,$rootScope,$scope){
     });
     }
 }
-function LoginController($auth,$location,$rootScope,$scope){//Servicio que recoja datos del formu
+function LoginController($auth,$location,$rootScope,$scope,$state){//Servicio que recoja datos del formu
     console.log("loginController loaded");
     
     var vm = this;
     $rootScope.login=function(){ //funciones que se utilizan desde las vistas
-    console.log("NO APAREZCAS!");
+    console.log("Logeando....");
     $auth.login({//$auth.login por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor cuando se autentica o realiza HTTP
         username:$scope.username,
         password:$scope.password
     }).then(function(response){
+        console.log("logeado!");
+        $state.go('home');
         $scope.serverResponse=response;
     // Si se ha logueado correctamente, lo tratamos aquí.
     // Podemos también redirigirle a una ruta

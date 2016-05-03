@@ -139,10 +139,10 @@ function LoginController($auth,$location,$rootScope,$scope,$state){//Servicio qu
     }).then(function(response){
         console.log("logeado!");
         $state.go('home');
-        $scope.serverResponse=response;
+        $scope.serverResponse=response.statusText;
     // Si se ha logueado correctamente, lo tratamos aquí.
     // Podemos también redirigirle a una ruta
-        $location.path("/private")
+        //$location.path("/private")
     })
     .catch(function(response){
         console.dir(response);

@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  div(ng-controller='IndexController')
   h1= title
   p Welcome to #{title}
   p User: #{user}
@@ -11,3 +12,4 @@ block content
   if(user)
     p Yout are currently logged in as #{user.username}
     a(href='/logout') Logout
+

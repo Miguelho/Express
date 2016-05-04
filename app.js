@@ -41,7 +41,7 @@ passport.deserializeUser(Account.deserializeUser());
 app.use('/users', users);
 
 //mongoose
-var dbConnectionString= String('mongodb://localhost:27017/prueba');
+var dbConnectionString= String('mongodb://194.140.7.171:27017/prueba');
 mongoose.connect(dbConnectionString);
 
 // catch 404 and forward to error handler

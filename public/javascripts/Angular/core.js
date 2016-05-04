@@ -6,7 +6,8 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
     //http://joelhooks.com/blog/2013/07/22/the-basics-of-using-ui-router-with-angularjs/
     $stateProvider
         .state('home', {
-    url: "/"
+    url: "/home",
+    controller:'IndexController'
     //abstract: true,
     })
         .state('login', {
@@ -33,9 +34,9 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
     $urlRouterProvider.when('/',{
         redirectTo:'/'
     });
-    
-    $urlRouterProvider.otherwise('/outside/login');
     */
+    $urlRouterProvider.otherwise('/login');
+    
     /*$routeProvider app.config([,'$routeProvider'
     function(,$routeProvider
         .when('/',{
@@ -139,10 +140,10 @@ function LoginController($auth,$location,$rootScope,$scope,$state){//Servicio qu
     }).then(function(response){
         console.log("logeado!");
         $state.go('home');
-        $scope.serverResponse=response;
+        $scope.serverResponse=response.statusText;
     // Si se ha logueado correctamente, lo tratamos aquí.
     // Podemos también redirigirle a una ruta
-        $location.path("/private")
+        //$location.path("/private")
     })
     .catch(function(response){
         console.dir(response);

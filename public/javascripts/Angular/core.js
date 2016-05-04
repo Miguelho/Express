@@ -1,104 +1,6 @@
 'use strict';
 var app= angular.module('passportLocal', ['ui.router','satellizer']);
 
-app.config(['$httpProvider','SatellizerConfig','$stateProvider','$urlRouterProvider','$authProvider',
- function($httpProvider,config,$stateProvider,$urlRouterProvider,$authProvider) {
-    //http://joelhooks.com/blog/2013/07/22/the-basics-of-using-ui-router-with-angularjs/
-    //State configuration
-    $stateProvider
-        .state('site', {
-            'abstract': true,
-            resolve: {
-                authorize: ['authorization',
-                function(authorization) {
-                    return authorization.authorize();
-            }
-            ]},
-            template: '<div ui-view />'
-    })
-        .state('home', {
-    parent:'site',
-    url: "/",
-    data: {requiredLogin: true, user:"miguel"},
-    controller:'HomeController'
-    })
-        .state('outside',{
-            url: '/ping'
-    })
-        .state('login', {
-    url: '/loginpollaws',
-    //templateUrl: 'templates/login.html',
-    controller: 'LoginController',
-    controllerAs: "login"
-    })
-        .state('register', {
-    url: '/register',
-    //templateUrl: 'templates/register.html',
-    controller: 'RegisterController',
-    controllerAs:'register'
-    })
-        .state('logout', {
-    url: '/logout',
-    templateUrl:null,
-    controller:"LogoutController"
-    });
-
-    //$urlRouterProvider.otherwise('/');
-
-        // use the HTML5 History API
-        //$locationProvider.html5Mode(true); //standardized way to manipulate browser history using a script, lets angular
-        //cambiar el ruteo y las urls sin refrescar la pagina
-
-    $httpProvider.interceptors.push(function($q,$location) {
-        var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
-        return {
-            'request': function(httpConfig) {
-            // do something on success
-            var token = localStorage.getItem(tokenName); //Accede al almacenamiento local para recoger el token JWT
-            //alert(config)
-            if(token && config.httpInterceptor){
-                token = config.authHeader === 'Authorization' ? 'Bearer ' + token : token;
-                httpConfig.headers[config.authHeader] = token; //inserta en la cabezara el token
-            }
-            return httpConfig;// envia la req, el Backend se encarga de ver si existe o no
-            },
-            'response':function(response){
-                console.dir(response);
-                //console.log($location.path());
-                return response;
-            },'responseError': function(rejection){
-
-                var defer = $q.defer(); //Instancia de un objeto deferred
-
-                if(rejection.status == 401){
-                    console.dir(rejection);
-                    $location.url('/');
-                }
-                if(rejection.status == 500){
-                    console.dir(rejection);
-                    $location.url('/');
-                }
-                if(rejection.status == 301){
-                    console.dir(rejection)
-                }
-                defer.reject(rejection); //defer.reject(reason), rechaza la promesa derivada con una razón. Equvialente
-                //a resolverlo con una rejection construida así $q.reject
-
-                return defer.promise; //retorna una instancia de nueva promesa, esta permite a la página y otross servicios asociados
-                //ganar acceso al resultado de las tareas deferred cuando se completan
-
-            }
-        };
-    });
-
-    $authProvider.loginUrl= "http://localhost:3000/login";//rutas al server
-    $authProvider.signupUrl= "http://localhost:3000/register";//rutas al server
-    $authProvider.tokenName= "token";//Nombre del token
-    $authProvider.tokenPrefix= "passportLocal";//Añade prefijo para diferenciar LocalStorage de otros. En LocalStorage: token_passportLocal
-
-}]);
-
-
 //app.run carga los servicios personalizados
 app.run(function ($rootScope, $state,$auth,principal,authorization) {
   $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams) {
@@ -112,7 +14,7 @@ app.run(function ($rootScope, $state,$auth,principal,authorization) {
             authorization.authorize();
             event.preventDefault();
         }else{
-            console.log("Identidad no resuelta");
+            console.log("Identidad no resuelta aún");
         }
     /*var requiredLogin = false;
       // check if this state need login
@@ -136,124 +38,12 @@ app.run(function ($rootScope, $state,$auth,principal,authorization) {
 
 })
 
-
-function RegisterController($auth,$location,$rootScope,$scope){
-    console.log("RegisterController loaded");
-    var vm = this;
-    $rootScope.signup=function(){
-    console.log("NO APAREZCAS!");
-    $auth.signup({//$auth.signup por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor
-        username:$scope.username,
-        password:$scope.password
-    }).then(function(response){
-        //Si se ha registrado correctamente, le redirige a otra ruta
-        $scope.serverResponse=response;
-        
-    }).catch(function(response){
-        $scope.serverResponse=response;
-    });
-    }
-}
-function LoginController($auth,$rootScope,$scope,$state,$window){//Servicio que recoja datos del formu
-    console.log("loginController loaded");
-    $rootScope.login=function(){ //funciones que se utilizan desde las vistas
-    console.log("Logeando....");
-    $auth.login({//$auth.login por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor cuando se autentica o realiza HTTP
-        username:$scope.username,
-        password:$scope.password
-    }).then(function(response){
-        console.log("logeado!");
-        var url = "http://" + $window.location.host + "/home"; //el servicio $window permite el redireccionamiento a una nueva página
-        $window.location.href=url;
-        //$scope.serverResponse=response.statusText;
-    })
-    // Si ha habido errores llegamos a esta parte
-    .catch(function(response){
-        console.dir(response);
-    });
-    }
-}
-function LogoutController($scope,$auth,$window) {
-    $scope.isAuthenticated = function(){
-        $auth.isAuthenticated();
-    };
-    if($scope.isAuthenticated()){
-        $auth.logout()
-        .then(function() {
-            var url = "http://" + $window.location.host + "/";
-            $state.go('logout');
-            $window.location.href=url;
-        })
-        .catch(function(){
-
-        });
-    }
-    
-}
-app.controller('RegisterController',RegisterController);
-app.controller('LoginController',LoginController);
-app.controller('LogoutController',LogoutController);
 //app.controller() para la conexión entre nuestros servicios y la vista HTML
 app.controller('mainController',function($scope,$http,$location,$window,AuthService,$state){
 	$scope.formData={};
     $scope.authors={};
     $scope.serverResponse=String("");
     console.log("mainController loaded");
-
-
-    /*$scope.login = function() {
-    AuthService.login(angular.toJson(getDataFromRegisterForm()))
-    .then(
-        function successCallback(msg) {
-            $state.go('inside');
-            console.log("estado "+ $state);
-    }, function errorCallback(errMsg) {
-        console.log("erroraco")
-      var alertPopup = alert({
-        title: 'Login failed!',
-        template: errMsg
-      });
-    });
-    };*/
-    
-    //pre Devdactic
-    /*$scope.login = function(){
-        $http({method:'POST',
-            url:'/login',
-            data: angular.toJson(getDataFromRegisterForm()),
-            headers:{'Content-Type':'application/json'}
-        }).then(function successCallback(response) {
-                if(!response['status'])
-                    console.log("Servers says to go to root directory!")
-                else{
-                    $scope.serverResponse=String("logeado!");
-                    console.log(response.redirect);
-                    //$window.location.href=data.redirect;
-
-                }
-                    //$window.location.href='/'; redirige sí, pero sin tener en cuenta la renderización con user
-            },function errorCallback(response){
-                $scope.serverResponse=response.data;
-                //$location.url('/');
-            }
-        ).catch(function(err){
-            $scope.serverResponse=err.message;
-        });
-    };*/
-            /*
-            .error(function(data) {
-                console.log('Error: ' + data);
-            });
-            */
-    /*$scope.signup = function(){
-        $http.post('/register',angular.toJson(getDataFromRegisterForm()),{'Content-Type':'application/json'} )
-            .success(function(data) {
-               $location.url('/');
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            });
-    };*/
 
     function getDataFromRegisterForm(){
         var data = ({username:$scope.username,

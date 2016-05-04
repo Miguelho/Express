@@ -38,7 +38,7 @@ var Account = require('./models/account');
 passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
-app.use('/users', users);
+app.use('/user', users);
 
 //mongoose
 var dbConnectionString= String('mongodb://194.140.7.171:27017/prueba');

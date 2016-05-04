@@ -1,21 +1,32 @@
 'use strict';
 var app= angular.module('passportLocal', ['ui.router','satellizer']);
 
-app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvider','$urlRouterProvider','$authProvider',
- function($httpProvider,config,$locationProvider,$stateProvider,$urlRouterProvider,$authProvider) {
+app.config(['$httpProvider','SatellizerConfig','$stateProvider','$urlRouterProvider','$authProvider',
+ function($httpProvider,config,$stateProvider,$urlRouterProvider,$authProvider) {
     //http://joelhooks.com/blog/2013/07/22/the-basics-of-using-ui-router-with-angularjs/
+    //State configuration
     $stateProvider
-        /*.state('index',{
-        url:'/'
-    })*/
+        .state('site', {
+            'abstract': true,
+            resolve: {
+                authorize: ['authorization',
+                function(authorization) {
+                    return authorization.authorize();
+            }
+            ]},
+            template: '<div ui-view />'
+    })
         .state('home', {
-    url: "/home",
-    controller:'HomeController',
-    data: {requiredLogin: true, user:"miguel"}
-    //abstract: true,
+    parent:'site',
+    url: "/",
+    data: {requiredLogin: true, user:"miguel"},
+    controller:'HomeController'
+    })
+        .state('outside',{
+            url: '/ping'
     })
         .state('login', {
-    url: '/login',
+    url: '/loginpollaws',
     //templateUrl: 'templates/login.html',
     controller: 'LoginController',
     controllerAs: "login"
@@ -32,7 +43,7 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
     controller:"LogoutController"
     });
 
-    $urlRouterProvider.otherwise('/');
+    //$urlRouterProvider.otherwise('/');
 
         // use the HTML5 History API
         //$locationProvider.html5Mode(true); //standardized way to manipulate browser history using a script, lets angular
@@ -88,10 +99,22 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
 }]);
 
 
-
-app.run(function ($rootScope, $state,$auth) {
-  $rootScope.$on('$stateChangeStart', function (event, toState) {
-    var requiredLogin = false;
+//app.run carga los servicios personalizados
+app.run(function ($rootScope, $state,$auth,principal,authorization) {
+  $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams) {
+    // track the state the user wants to go to; authorization service needs this
+        $rootScope.toState = toState;
+        $rootScope.toStateParams = toStateParams;
+        // if the principal is resolved, do an authorization check immediately. otherwise,
+        // it'll be done when the state it resolved.
+        if (principal.isIdentityResolved()){    
+            console.log("Identidad " + toState.name);
+            authorization.authorize();
+            event.preventDefault();
+        }else{
+            console.log("Identidad no resuelta");
+        }
+    /*var requiredLogin = false;
       // check if this state need login
       if (toState.data && toState.data.requiredLogin)
         requiredLogin = true;
@@ -100,7 +123,7 @@ app.run(function ($rootScope, $state,$auth) {
       if (requiredLogin && !$auth.isAuthenticated()) {
         event.preventDefault();
         $state.go('login');
-      }
+      }*/
 
     /*if (!AuthService.isAuthenticated()) {
       console.log(next.name);
@@ -140,14 +163,13 @@ function LoginController($auth,$rootScope,$scope,$state,$window){//Servicio que 
         password:$scope.password
     }).then(function(response){
         console.log("logeado!");
-        $state.go('home'); //Cambio de estado a home
         var url = "http://" + $window.location.host + "/home"; //el servicio $window permite el redireccionamiento a una nueva página
         $window.location.href=url;
-        $scope.serverResponse=response.statusText;
+        //$scope.serverResponse=response.statusText;
     })
+    // Si ha habido errores llegamos a esta parte
     .catch(function(response){
         console.dir(response);
-    // Si ha habido errores llegamos a esta parte
     });
     }
 }

@@ -40,7 +40,7 @@ myApp.factory('principal', ['$q', '$http', '$timeout','$window',
           localStorage.removeItem("demo.identity");
         }
       },
-      identity: function(force) {
+      identity: function(force,id) {
         var deferred = $q.defer();
         var url = "http://" + $window.location.host + "/home";
         console.log("from principal 1");
@@ -57,7 +57,7 @@ myApp.factory('principal', ['$q', '$http', '$timeout','$window',
         }
         console.log("from principal 3");
 
-          var url = "http://" + $window.location.host + "/user/572849d71b47b8f418bd96c6"; //Petición de Identidad del usuario
+          var url = "http://" + $window.location.host + "/user/"+id; //Petición de Identidad del usuario
           console.log("******** identity() shot ********" + _identity);//1ºvez undefined al no persistir 
           $http.get(url, { ignoreErrors: false })
                                 .success(function(data) {
@@ -70,7 +70,7 @@ myApp.factory('principal', ['$q', '$http', '$timeout','$window',
                                   console.log("principal errorcito");
                                     _identity = null;
                                     _authenticated = false;
-                                    deferred.resolve(_identity);
+                                    deferred.reject(_identity);
                                 });
         
 

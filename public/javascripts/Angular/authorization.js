@@ -5,7 +5,7 @@ myApp.factory('authorization', ['$rootScope', '$state', 'principal',
   	console.log("authorization.js cargado")
     return {
       authorize: function() {
-        return principal.identity()
+        return principal.identity("5729b378d1b1abdc1a2fc949")
           .then(function(credentials) {
             var isAuthenticated = principal.isAuthenticated();
             //if ($rootScope.toState.data.roles && $rootScope.toState.data.roles.length > 0 && !principal.isInAnyRole($rootScope.toState.data.roles)) {

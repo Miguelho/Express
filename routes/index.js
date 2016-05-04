@@ -7,8 +7,14 @@ var authCtrl = require('../controllers/auth.js');
 var router = express.Router();
 
 /* GET home page. */
-router.route('/').get(function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.route('/')
+  .get(function(req, res, next) {
+    console.log("pug");
+    res.render('index', { title: 'Express' });
+    /*res.render('index',{},function(err,html){
+      res.send('completado');
+    });*/
+
 });
 /* ROUTE /register HTTP VERBS*/
 router.route('/register')
@@ -23,9 +29,6 @@ router.route('/login')
 	})
 	.post(authCtrl.emailLogin);
     	
-
-
-
 router.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
@@ -35,6 +38,12 @@ router.get('/ping', function(req, res){
     res.status(200).send("pong!");
 });
 
-router.route('private', middleware.ensureAuthenticated, function(req,res){} );
+router.route('/home')
+  .get(function(req, res) {
+      res.render('home', {});
+  });
+  //.post(authCtrl.emailLogin);
+
+//router.route('private', middleware.ensureAuthenticated, function(req,res){} );
 
 module.exports = router;

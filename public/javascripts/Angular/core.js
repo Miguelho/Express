@@ -5,10 +5,13 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
  function($httpProvider,config,$locationProvider,$stateProvider,$urlRouterProvider,$authProvider) {
     //http://joelhooks.com/blog/2013/07/22/the-basics-of-using-ui-router-with-angularjs/
     $stateProvider
+        /*.state('index',{
+        url:'/'
+    })*/
         .state('home', {
-    url: "/",
-    controller:'IndexController',
-    data: {requiredLogin: true}
+    url: "/home",
+    controller:'HomeController',
+    data: {requiredLogin: true, user:"miguel"}
     //abstract: true,
     })
         .state('login', {
@@ -29,7 +32,7 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
     controller:"LogoutController"
     });
 
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise('/');
 
         // use the HTML5 History API
         //$locationProvider.html5Mode(true); //standardized way to manipulate browser history using a script, lets angular
@@ -138,7 +141,7 @@ function LoginController($auth,$rootScope,$scope,$state,$window){//Servicio que 
     }).then(function(response){
         console.log("logeado!");
         $state.go('home'); //Cambio de estado a home
-        var url = "http://" + $window.location.host + "/"; //el servicio $window permite el redireccionamiento a una nueva página
+        var url = "http://" + $window.location.host + "/home"; //el servicio $window permite el redireccionamiento a una nueva página
         $window.location.href=url;
         $scope.serverResponse=response.statusText;
     })

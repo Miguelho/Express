@@ -122,16 +122,14 @@ function RegisterController($auth,$location,$rootScope,$scope){
     }).then(function(response){
         //Si se ha registrado correctamente, le redirige a otra ruta
         $scope.serverResponse=response;
-        $location.path('/');
+        
     }).catch(function(response){
         $scope.serverResponse=response;
     });
     }
 }
-function LoginController($auth,$location,$rootScope,$scope,$state){//Servicio que recoja datos del formu
+function LoginController($auth,$rootScope,$scope,$state,$window){//Servicio que recoja datos del formu
     console.log("loginController loaded");
-    
-    var vm = this;
     $rootScope.login=function(){ //funciones que se utilizan desde las vistas
     console.log("Logeando....");
     $auth.login({//$auth.login por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor cuando se autentica o realiza HTTP
@@ -140,10 +138,9 @@ function LoginController($auth,$location,$rootScope,$scope,$state){//Servicio qu
     }).then(function(response){
         console.log("logeado!");
         $state.go('home');
+        var url = "http://" + $window.location.host + "/";
+        $window.location.href=url;
         $scope.serverResponse=response.statusText;
-    // Si se ha logueado correctamente, lo tratamos aquí.
-    // Podemos también redirigirle a una ruta
-        //$location.path("/private")
     })
     .catch(function(response){
         console.dir(response);
@@ -151,12 +148,22 @@ function LoginController($auth,$location,$rootScope,$scope,$state){//Servicio qu
     });
     }
 }
-function LogoutController($auth, $location) {  
-    $auth.logout()
+function LogoutController($scope,$auth,$window) {
+    $scope.isAuthenticated = function(){
+        $auth.isAuthenticated();
+    };
+    if($scope.isAuthenticated()){
+        $auth.logout()
         .then(function() {
-            // Desconectamos al usuario y lo redirijimos
-            $location.path("/")
+            var url = "http://" + $window.location.host + "/index.html";
+            $state.go('logout');
+            $window.location.href=url;
+        })
+        .catch(function(){
+
         });
+    }
+    
 }
 app.controller('RegisterController',RegisterController);
 app.controller('LoginController',LoginController);

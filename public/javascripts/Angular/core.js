@@ -6,8 +6,9 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
     //http://joelhooks.com/blog/2013/07/22/the-basics-of-using-ui-router-with-angularjs/
     $stateProvider
         .state('home', {
-    url: "/home",
-    controller:'IndexController'
+    url: "/",
+    controller:'IndexController',
+    data: {requiredLogin: true}
     //abstract: true,
     })
         .state('login', {
@@ -27,22 +28,9 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
     templateUrl:null,
     controller:"LogoutController"
     });
-       /* .state('private',{
-            url:'/private'
-    });
 
-    $urlRouterProvider.when('/',{
-        redirectTo:'/'
-    });
-    */
     $urlRouterProvider.otherwise('/login');
-    
-    /*$routeProvider app.config([,'$routeProvider'
-    function(,$routeProvider
-        .when('/',{
-            redirectTo:'/'
-        })
-        .otherwise('/ping.html');*/
+
         // use the HTML5 History API
         //$locationProvider.html5Mode(true); //standardized way to manipulate browser history using a script, lets angular
         //cambiar el ruteo y las urls sin refrescar la pagina
@@ -98,17 +86,29 @@ app.config(['$httpProvider','SatellizerConfig','$locationProvider','$stateProvid
 
 
 
-/*app.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
-  $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
-    if (!AuthService.isAuthenticated()) {
+app.run(function ($rootScope, $state,$auth) {
+  $rootScope.$on('$stateChangeStart', function (event, toState) {
+    var requiredLogin = false;
+      // check if this state need login
+      if (toState.data && toState.data.requiredLogin)
+        requiredLogin = true;
+      
+      // if yes and if this user is not logged in, redirect him to login page
+      if (requiredLogin && !$auth.isAuthenticated()) {
+        event.preventDefault();
+        $state.go('login');
+      }
+
+    /*if (!AuthService.isAuthenticated()) {
       console.log(next.name);
       if (next.name !== 'outside.login' && next.name !== 'outside.register') {
         event.preventDefault();
         $state.go('outside.login');
       }
-    }
+    }*/
   });
-})*/
+
+})
 
 
 function RegisterController($auth,$location,$rootScope,$scope){
@@ -137,8 +137,8 @@ function LoginController($auth,$rootScope,$scope,$state,$window){//Servicio que 
         password:$scope.password
     }).then(function(response){
         console.log("logeado!");
-        $state.go('home');
-        var url = "http://" + $window.location.host + "/";
+        $state.go('home'); //Cambio de estado a home
+        var url = "http://" + $window.location.host + "/"; //el servicio $window permite el redireccionamiento a una nueva página
         $window.location.href=url;
         $scope.serverResponse=response.statusText;
     })
@@ -155,7 +155,7 @@ function LogoutController($scope,$auth,$window) {
     if($scope.isAuthenticated()){
         $auth.logout()
         .then(function() {
-            var url = "http://" + $window.location.host + "/index.html";
+            var url = "http://" + $window.location.host + "/";
             $state.go('logout');
             $window.location.href=url;
         })

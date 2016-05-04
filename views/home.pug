@@ -3,7 +3,8 @@ extends layout
 block content
   div(ng-controller='HomeController')
   h1= title
-  p Welcome to #{title}
-  p User: #{user}
+  p Welcome to {{HomeController.message}}
+  p message#{message}
+  p {{2+2}}
   
 

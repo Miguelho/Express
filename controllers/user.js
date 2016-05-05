@@ -13,7 +13,7 @@ exports.getUserId = function(req,res,next){
 			if(err)
 				res.send(err.message);
 			else{
-				console.log("el nombre del usuario es "+ data[0]['username']);//data[0] xk devuelve un array de json
+				//console.log("el nombre del usuario es "+ data[0]['username']);//data[0] xk devuelve un array de json
 				res.status(200).json(data[0]);
 			}
 

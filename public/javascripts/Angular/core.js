@@ -2,14 +2,14 @@
 var app= angular.module('passportLocal', ['ui.router','satellizer']);
 
 //app.run carga los servicios personalizados
-app.run(function ($rootScope, $state,$auth,principal,authorization) {
+app.run(function ($rootScope, $state,$auth,servicio,authorization) {
   $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams) {
     // track the state the user wants to go to; authorization service needs this
         $rootScope.toState = toState;
         $rootScope.toStateParams = toStateParams;
         // if the principal is resolved, do an authorization check immediately. otherwise,
         // it'll be done when the state it resolved.
-        if (principal.isIdentityResolved()){    
+        if (servicio.isIdentityResolved()){    
             console.log("Identidad " + toState.name);
             authorization.authorize();
             event.preventDefault();
@@ -39,7 +39,7 @@ app.run(function ($rootScope, $state,$auth,principal,authorization) {
 })
 
 //app.controller() para la conexión entre nuestros servicios y la vista HTML
-app.controller('mainController',function($scope,$http,$location,$window,AuthService,$state){
+app.controller('mainController',function($scope,$http,$location,$window,$state){
 	$scope.formData={};
     $scope.authors={};
     $scope.serverResponse=String("");
@@ -93,70 +93,5 @@ app.controller('mainController',function($scope,$http,$location,$window,AuthServ
             console.log('Error: ' + data);
         });
     };
-/*
-	$scope.insertAuthor = function() {
-        $http.post('/authors/', getDataFromForm())
-            .success(function(data) {
-                $scope.serverResponse=data;
-                $scope.formData = {}; // limpia info anterior en formData;
-                //$scope.authors = data;
-                console.log("data " + data);
-                $scope.refresh();
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            });
-    };
-
-    $scope.updateAuthor = function() {
-        //$http.put(url,data,config)
-        //alert("Me actualiso");
-
-        var data= ({
-            first_name:$scope.first_name,
-            biography:$scope.biography,
-            DoB:$scope.DoB,
-            nationality:$scope.nationality
-        });
-        console.log(data);
-
-        $http.put('/authors/'+$scope.first_name,data)
-            .success(function(data,status,headers) {
-                $scope.serverResponse=data;
-            })
-            .error(function(data, status, header, config) {
-                $scope.serverResponse="error";
-                console.log('Error: ' + data);
-            });
-    };
-    $scope.deleteAuthor = function() {
-        console.log($scope.borrar);
-        $http.delete('/authors/'+ $scope.borrar)
-            .success(function(data,status,headers) {
-                $scope.serverResponse=data;
-            })
-            .error(function(data, status, header, config) {
-            	$scope.serverResponse="error";
-                console.log('Error: ' + data);
-            });
-    };
-    function recogerCampos(){
-       
-        $scope.formData[0]=$scope.first_name;
-        $scope.formData[1]=$scope.biography;
-        $scope.formData[2]=$scope.DoB;
-        $scope.formData[3]=$scope.nationality;
-        
-        return $scope.formData;
-    }
-
-    function getDataFromForm(){
-        var data = ({first_name:$scope.first_name,
-            biography:$scope.biography,
-            DoB:$scope.DoB,
-            nationality:$scope.nationality}); 
-        return data;
-    }
-*/
 
 });

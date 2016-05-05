@@ -37,3 +37,23 @@ exports.emailLogin= function(req,res,next){
     	//res.status(201).send({redirect:'/ping'}
 	})(req, res);;
 };
+
+// Crear un nuevo controller middleware que es usado para autorizar una operación article 
+exports.hasAuthorization = function(req, res, next) {
+	// si el usuario actual no es el creador del artículo, enviar el mensaje de error apropiado
+
+	console.log(req.headers);
+	if (!req.headers['authorization']) {
+		console.log("el user NO ! esta autorizado");
+
+		return res.status(403).send({
+			message: 'Usuario no está autorizado'
+		});
+	}else{
+		console.log("el user esta autorizado");
+		//next();
+	}
+
+	// Llamar al siguiente middleware
+	
+};

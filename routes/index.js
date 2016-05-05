@@ -39,7 +39,7 @@ router.get('/ping', function(req, res){
 });
 
 router.route('/home')
-  .get(function(req, res) {
+  .get(authCtrl.hasAuthorization,function(req, res) {
       res.render('home', {});
   });
   //.post(authCtrl.emailLogin);

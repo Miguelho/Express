@@ -1,10 +1,11 @@
 var myApp= angular.module('passportLocal');
 
-myApp.factory('principal', ['$q', '$http', '$timeout','$window',
+myApp
+.factory('servicio', ['$q', '$http', '$timeout','$window',
   function($q, $http, $timeout, $window) {
     var _identity = undefined,
       _authenticated = false;
-
+      console.log("servicios cargados")
       //devuelve states
     return {
       isIdentityResolved: function() {
@@ -30,7 +31,7 @@ myApp.factory('principal', ['$q', '$http', '$timeout','$window',
       authenticate: function(identity) {
         _identity = identity;
         _authenticated = identity != null;
-        
+        //var token = localStorage.getToken('')
         // for this demo, we'll store the identity in localStorage. For you, it could be a cookie, sessionStorage, whatever
         if (identity) {
           console.log("authenticate() HAY una identidad no hay una identidad en local"  + identity);
@@ -42,7 +43,7 @@ myApp.factory('principal', ['$q', '$http', '$timeout','$window',
       },
       identity: function(force,id) {
         var deferred = $q.defer();
-        var url = "http://" + $window.location.host + "/home";
+        var url = "http://" + $window.location.host + "/home";//Android --> se necesitar cambiar para uqe no interprete localhost como al terminal
         console.log("from principal 1");
         if (force === true){ 
             _identity = undefined;

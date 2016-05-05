@@ -1,8 +1,8 @@
 var myApp= angular.module('passportLocal');
 
-myApp.factory('authorization', ['$rootScope', '$state', 'principal',
+myApp.factory('authorization', ['$rootScope', '$state', 'servicio',
   function($rootScope, $state, principal, $window) {
-  	console.log("authorization.js cargado")
+  	console.log("authorization.js cargado");
     return {
       authorize: function() {
         return principal.identity(false,"5729b398d1b1abdc1a2fc949")

@@ -24,6 +24,7 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
       baseUrl: '/',
       loginUrl: '/auth/login',
       signupUrl: '/auth/signup',
+      signupAdminUrl: '/auth/signup',
       unlinkUrl: '/auth/unlink/',
       tokenName: 'token',
       tokenPrefix: 'satellizer',
@@ -170,6 +171,10 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         signupUrl: {
           get: function() { return config.signupUrl; },
           set: function(value) { config.signupUrl = value; }
+        },//******************************************************* Añadido por Miguel
+        signupAdminUrl: {
+          get: function() { return config.signupAdminUrl; },
+          set: function(value) { config.signupAdminUrl = value; }
         },
         tokenRoot: {
           get: function() { return config.tokenRoot; },
@@ -463,6 +468,16 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         Local.signup = function(user, opts) {
           opts = opts || {};
           opts.url = opts.url ? opts.url : utils.joinUrl(config.baseUrl, config.signupUrl);
+          opts.data = user || opts.data;
+          opts.method = opts.method || 'POST';
+          opts.withCredentials = opts.withCredentials || config.withCredentials;
+
+          return $http(opts);
+        };
+        //************************************************************Añadido por Miguel
+        Local.signupAdmin = function(admin, opts) {
+          opts = opts || {};
+          opts.url = opts.url ? opts.url : utils.joinUrl(config.baseUrl, config.signupAdmin);
           opts.data = user || opts.data;
           opts.method = opts.method || 'POST';
           opts.withCredentials = opts.withCredentials || config.withCredentials;

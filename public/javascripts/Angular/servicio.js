@@ -1,12 +1,16 @@
 var myApp= angular.module('passportLocal');
 
 myApp
-.factory('servicio', ['$q', '$http', '$timeout','$window',
-  function($q, $http, $timeout, $window) {
+.factory('servicio', ['$q', '$http', '$timeout','$window','$auth',
+  function($q, $http, $timeout, $window,$auth) {
     var _identity = undefined,
       _authenticated = false;
-      console.log("servicios cargados")
-      //devuelve states
+      console.log("servicios cargados");
+
+      var accessLevels = routingConfig.accessLevels
+        , userRoles = routingConfig.userRoles
+        , currentUser = $auth.getToken('passportLocal_token') || { username: '', role: userRoles.public };
+
     return {
       isIdentityResolved: function() {
         return angular.isDefined(_identity);

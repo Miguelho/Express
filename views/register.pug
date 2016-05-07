@@ -15,11 +15,13 @@ form.form-horizontal(ng-submit="signup()", name="registerForm", role="form")
     .form-group
         .radio.radio-inline
             label
-                input(type="radio", name="role", data-ng-model="role", id="adminRole", data-ng-value="userRoles.admin")
+                input(type="radio", name="role", ng-model="rol", id="adminRole", 
+                value="admin")
                 | Administrator
         .radio.radio-inline
             label
-                input(type="radio", name="role", data-ng-model="role", id="adminRole", data-ng-value="userRoles.user")
+                input(type="radio", name="role", ng-model="rol", id="adminRole", 
+                value="user")
                 | Normal user
     .form-group
         .controls

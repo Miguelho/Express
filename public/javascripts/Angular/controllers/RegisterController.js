@@ -2,17 +2,35 @@ var myApp= angular.module('passportLocal');
 
 myApp.controller('RegisterController',function($auth,$location,$rootScope,$scope){
 	console.log("RegisterController loaded");
+    $scope.formData={username:$scope.username};
+    
     var vm = this;
     $rootScope.signup=function(){
-    $auth.signup({//$auth.signup por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor
-        username:$scope.username,
-        password:$scope.password
-    }).then(function(response){
-        //Si se ha registrado correctamente, le redirige a otra ruta
-        $scope.serverResponse=response;
-        
+    $scope.dummyData={
+        hey:"ho"
+    };
+    $scope.userRoles = routingConfig.userRoles;
+    console.log($scope.userRoles);
+    var user= {};
+    user={username:$scope.username,
+        password:$scope.password};
+    var rol = $scope.rol;
+    /*var isForAdmin = rol === "admin" ? 
+    $auth.signupAdmin(user)//$auth.signup por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor
+        .then(function(response){
+        $auth.setToken(response);
+        //$location.path('/');
     }).catch(function(response){
-        $scope.serverResponse=response;
-    });
+        toastr.error(response.data.message);
+    })
+    :
+    $auth.signup(user)//$auth.signup por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor
+        .then(function(response){
+        $auth.setToken(response.data.token); // Guarda en localStorage el token recibido del servidor
+    }).catch(function(response){
+        toastr.error(response.data.message);
+    });*/
+
+    console.log("se registró como " + rol)
     }
-});		
+});	

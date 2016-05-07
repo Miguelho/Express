@@ -175,6 +175,7 @@ var access = routingConfig.accessLevels;
 
     $authProvider.loginUrl= "http://localhost:3000/login";//rutas al server
     $authProvider.signupUrl= "http://localhost:3000/register";//rutas al server
+    $authProvider.signupAdminUrl= "http://localhost:3000/registerAdmin";//rutas al server
     $authProvider.tokenName= "token";//Nombre del token
     $authProvider.tokenPrefix= "passportLocal";//Añade prefijo para diferenciar LocalStorage de otros. En LocalStorage: token_passportLocal
     $authProvider.authHeader = 'Authorization';

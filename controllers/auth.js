@@ -4,16 +4,16 @@ var service = require('../service.js')
 
 exports.emailSignup= function(req,res,next){
 		console.log(req.body.username+" "+ req.body.password);
+		//console.log(req.body);
+		console.log("req.body.role " + req.body.role );
 		Account.register(new Account({username:req.body.username}),req.body.password, function(err, account) {
         if (err) {
         	console.log("he petao");
             return res.render("register", {info: "Sorry. That username already exists. Try again."});
         }
         passport.authenticate('local')(req, res, function () {
-	    	console.log("Autenticado");
+	    	console.log(req.body.username + " registrado correctamente");
 	    	return res.status(200).send({token:service.createToken(Account)})
-	    	//res.render('index')
-	    	//res.redirect('/');
 
         });
 		});

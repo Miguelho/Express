@@ -10,13 +10,10 @@ myApp.controller('LoginController',function($auth,$rootScope,$scope,$state,$wind
     }).then(function(response){
         console.log("logeado!");
         var url = "http://" + $window.location.host + "/home"; //el servicio $window permite el redireccionamiento a una nueva página
-        $window.location.href=url;
+        //$window.location.href=url;
         $state.go('user.home');
     })
-    // Si ha habido errores llegamos a esta parte
     .catch(function(response){
-        //console.dir(response);
-        $state.get()
         $state.go('anon.login');
         
     });

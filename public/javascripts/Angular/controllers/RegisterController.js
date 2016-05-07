@@ -12,21 +12,22 @@ myApp.controller('RegisterController',function($auth,$location,$rootScope,$scope
     user={username:$scope.username,
         password:$scope.password};
     var rol = $scope.rol;
-    var isForAdmin = rol === "admin" ? 
+    if(rol === "admin"){
     $auth.signupAdmin(user)//$auth.signup por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor
         .then(function(response){
         $auth.setToken(response);
     }).catch(function(response){
-        toastr.error(response.data.message);
+        toaster.error(response.data.message);
     })
-    :
+    }else{
     $auth.signup(user)//$auth.signup por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor
         .then(function(response){
         $auth.setToken(response.data.token); // Guarda en localStorage el token recibido del servidor
     }).catch(function(response){
-        toastr.error(response.data.message);
+        toaster.error(response.data.message);
     });
-
+    }
+   
     console.log("se registró como " + rol)
     }
 });	

@@ -31,7 +31,7 @@ var access = routingConfig.accessLevels;
         })
         .state('anon.login', {
             url: '/login/',
-            templateUrl: 'login',
+            templateUrl: 'logind',
             controller: 'LoginCtrl'
         })
         .state('anon.register', {
@@ -47,7 +47,7 @@ var access = routingConfig.accessLevels;
             template: "<ui-view/>"
         })
         .state('user.home', {
-            url: '/',
+            //url: '/',
             templateUrl: 'home'
         })
         .state('user.private', {

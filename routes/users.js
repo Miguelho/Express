@@ -9,7 +9,8 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.route('/:_id')
-	.get(UserCtrl.getUserId)
+//router.route('/:_id')
+router.route('/:username')
+	.get(UserCtrl.getIdByUsername)
 
 module.exports = router;

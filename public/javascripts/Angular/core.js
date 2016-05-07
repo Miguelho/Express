@@ -2,7 +2,7 @@
 var app= angular.module('passportLocal', ['ui.router','satellizer']);
 
 //app.run carga los servicios personalizados
-app.run(function ($rootScope, $state,$auth,servicio,authorization) {
+app.run(['$rootScope','$state','$auth','servicio','authorization',function ($rootScope, $state,$auth,servicio,authorization) {
   $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams) {
     // track the state the user wants to go to; authorization service needs this
         $rootScope.toState = toState;
@@ -11,10 +11,11 @@ app.run(function ($rootScope, $state,$auth,servicio,authorization) {
         // it'll be done when the state it resolved.
         if (servicio.isIdentityResolved()){    
             console.log("Identidad " + toState.name);
-            authorization.authorize();
-            event.preventDefault();
+            return;
         }else{
             console.log("Identidad no resuelta aún");
+            event.preventDefault();
+            authorization.authorize("Miguel");
         }
     /*var requiredLogin = false;
       // check if this state need login
@@ -36,7 +37,7 @@ app.run(function ($rootScope, $state,$auth,servicio,authorization) {
     }*/
   });
 
-})
+}]);
 
 //app.controller() para la conexión entre nuestros servicios y la vista HTML
 app.controller('mainController',function($scope,$http,$location,$window,$state){

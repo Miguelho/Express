@@ -11,11 +11,14 @@ myApp.controller('LoginController',function($auth,$rootScope,$scope,$state,$wind
         console.log("logeado!");
         var url = "http://" + $window.location.host + "/home"; //el servicio $window permite el redireccionamiento a una nueva página
         $window.location.href=url;
-        $state.go('home')
+        $state.go('user.home');
     })
     // Si ha habido errores llegamos a esta parte
     .catch(function(response){
-        console.dir(response);
+        //console.dir(response);
+        $state.get()
+        $state.go('anon.login');
+        
     });
     }
 });		

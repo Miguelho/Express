@@ -33,15 +33,17 @@ myApp
         _authenticated = identity != null;
         //var token = localStorage.getToken('')
         // for this demo, we'll store the identity in localStorage. For you, it could be a cookie, sessionStorage, whatever
-        if (identity) {
-          console.log("authenticate() HAY una identidad no hay una identidad en local"  + identity);
+        //console.log(localStorage);
+        if (_identity) {
+          console.log("authenticate() HAY una identidad"  + identity);
           localStorage.setItem("demo.identity", angular.toJson(identity));
+
         }else {
           console.log("authenticate() no hay una identidad en local")
           localStorage.removeItem("demo.identity");
         }
       },
-      identity: function(force,id) {
+      identity: function(force,username) {
         var deferred = $q.defer();
         var url = "http://" + $window.location.host + "/home";//Android --> se necesitar cambiar para uqe no interprete localhost como al terminal
         console.log("from principal 1");
@@ -51,6 +53,11 @@ myApp
         }
         console.log("from principal 2");
         // check and see if we have retrieved the identity data from the server. if we have, reuse it by immediately resolving
+        
+        //**** antes de procesar la promesa, compruebo que existe una identidad ? autenticarla
+        _identity = localStorage.getItem('passportLocal_token');
+        this.authenticate(_identity);
+        console.log("desde servicio " + _identity);
         if (angular.isDefined(_identity)) {
           deferred.resolve(_identity);
           console.log("angular.isDefined(_identity) retorna true" + JSON.stringify(_identity));//null
@@ -58,9 +65,11 @@ myApp
         }
         console.log("from principal 3");
 
-          var url = "http://" + $window.location.host + "/user/"+id; //Petición de Identidad del usuario
+          var url = "http://" + $window.location.host + "/user/"+username; //Petición de Identidad del usuario
           console.log("******** identity() shot ********" + _identity);//1ºvez undefined al no persistir 
-          $http.get(url, { ignoreErrors: false })
+          
+          //***SERVICIO DE AUTENTICACIÓN EXTRA DEL USUARIO PARA PREVENIR UTILIZAR UN TOKEN NO VÁLIDO***
+          /*$http.get(url, { ignoreErrors: false })
                                 .success(function(data) {
                                   console.log("principal data " + data);
                                     _identity = data; //Data from controllers/user
@@ -74,7 +83,7 @@ myApp
                                     deferred.reject(_identity);
                                 });
         
-
+        */
         // otherwise, retrieve the identity data from the server, update the identity object, and then resolve.
         //                   $http.get('/svc/account/identity', { ignoreErrors: true })
         //                        .success(function(data) {
@@ -92,7 +101,8 @@ myApp
         // i put it in a timeout to illustrate deferred resolution
         var self = this;
         $timeout(function() {
-          _identity = angular.fromJson(localStorage.getItem("demo.identity"));
+          //_identity = angular.fromJson(localStorage.getItem("passportLocal_token"));
+          _identity = localStorage.getItem("passportLocal_token");
           self.authenticate(_identity);
           deferred.resolve(_identity);
         }, 1000);

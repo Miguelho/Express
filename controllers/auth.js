@@ -50,10 +50,11 @@ exports.hasAuthorization = function(req, res, next) {
 			message: 'Usuario no está autorizado'
 		});
 	}else{
-		console.log("el user esta autorizado");
-		//next();
+		console.log("el user esta autorizado" + req.headers['authorization']);
+		return res.render("home");
+		
 	}
 
 	// Llamar al siguiente middleware
-	
+	next();
 };

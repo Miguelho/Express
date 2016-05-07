@@ -1,17 +1,18 @@
 var myApp= angular.module('passportLocal');
 
 myApp.factory('authorization', ['$rootScope', '$state', 'servicio',
-  function($rootScope, $state, principal, $window) {
+  function($rootScope, $state,servicio, $window) {
   	console.log("authorization.js cargado");
     return {
-      authorize: function() {
-        return principal.identity(false,"5729b398d1b1abdc1a2fc949")
+      authorize: function(username) {
+        console.log("authorize se dispara en authorization.js" + username);
+        return servicio.identity()
           .then(function(credentials) {
-            var isAuthenticated = principal.isAuthenticated();
+            var isAuthenticated = servicio.isAuthenticated();
             //if ($rootScope.toState.data.roles && $rootScope.toState.data.roles.length > 0 && !principal.isInAnyRole($rootScope.toState.data.roles)) {
-              if (isAuthenticated){
-               $state.go('home'); // user is signed in but not authorized for desired state
-              	console.log("$state.go a home");
+              if (isAuthenticated ){
+               $state.go('user.home'); // user is signed in but not authorized for desired state
+              	console.log("$state.go a home");//Aunque el cambio sea  al mismo estado, se considera un cambio de estado
               }else {
                 // user is not authenticated. stow the state they wanted before you
                 // send them to the signin state, so you can return them when you're done
@@ -30,4 +31,4 @@ myApp.factory('authorization', ['$rootScope', '$state', 'servicio',
       }
     };
   }
-])
+]);

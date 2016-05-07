@@ -24,6 +24,7 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
       baseUrl: '/',
       loginUrl: '/auth/login',
       signupUrl: '/auth/signup',
+      //*************************************** Añadido por Miguel
       signupAdminUrl: '/auth/signup',
       unlinkUrl: '/auth/unlink/',
       tokenName: 'token',
@@ -245,6 +246,11 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
 
           $auth.signup = function(user, options) {
             return local.signup(user, options);
+          };
+
+          //********************************************* Añadido por Miguel
+          $auth.signupAdmin = function(admin, options) {
+            return local.signupAdmin(admin, options);
           };
 
           $auth.logout = function() {
@@ -477,8 +483,8 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         //************************************************************Añadido por Miguel
         Local.signupAdmin = function(admin, opts) {
           opts = opts || {};
-          opts.url = opts.url ? opts.url : utils.joinUrl(config.baseUrl, config.signupAdmin);
-          opts.data = user || opts.data;
+          opts.url = opts.url ? opts.url : utils.joinUrl(config.baseUrl, config.signupAdminUrl);
+          opts.data = admin || opts.data;
           opts.method = opts.method || 'POST';
           opts.withCredentials = opts.withCredentials || config.withCredentials;
 

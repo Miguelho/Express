@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var admin = require('./routes/admin');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var mongoose=require('mongoose');
@@ -39,6 +40,7 @@ passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 app.use('/user', users);
+app.use('/admin', admin);
 
 //mongoose
 //var dbConnectionString= String('mongodb://194.140.7.171:27017/prueba');

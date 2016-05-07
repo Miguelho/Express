@@ -6,7 +6,7 @@ var adminCtrl = require('../controllers/admin.js');
 var router = express.Router();
 
 /* GET home page. */
-router.route('/admin')
+router.route('/')
   .get(function(req, res, next) {
     console.log("pugAdmin");
     res.render('index', { title: 'Express' });
@@ -16,17 +16,17 @@ router.route('/admin')
 
 });
 /* ROUTE /register HTTP VERBS*/
-router.route('/registerAdmin')
-	.get(function(req, res, next) {
-  		res.render('register', {});
-	})
+router.route('/register')
+  .get(function(req, res) {
+      res.render('home', { user : req.user });
+  })
 	.post(adminCtrl.emailSignup);
 
 router.route('/login')
 	.get(function(req, res) {
     	res.render('login', { user : req.user });
 	})
-	.post(authCtrl.emailLogin);
+	.post(adminCtrl.emailLogin);
     	
 router.get('/logout', function(req, res) {
     req.logout();

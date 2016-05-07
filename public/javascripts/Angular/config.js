@@ -30,8 +30,8 @@ var access = routingConfig.accessLevels;
             }
         })
         .state('anon.login', {
-            url: '/login/',
-            templateUrl: 'logind',
+            //url: '/login/',
+            template: '<h1>Has de logeartee!</h1>',
             controller: 'LoginCtrl'
         })
         .state('anon.register', {
@@ -47,7 +47,8 @@ var access = routingConfig.accessLevels;
             template: "<ui-view/>"
         })
         .state('user.home', {
-            //url: '/',
+            url: '/home',
+            redirectTo:'/home',
             templateUrl: 'home'
         })
         .state('user.private', {
@@ -138,7 +139,7 @@ var access = routingConfig.accessLevels;
             var token = localStorage.getItem(tokenName); //Accede al almacenamiento local para recoger el token JWT
             //alert(config)
             if(token && config.httpInterceptor){
-                token = config.authHeader === 'Authorization' ? 'Bearer ' + token : token;
+                token = config.authHeader === "'Authorization'" ? 'Bearer ' + token : token;
                 httpConfig.headers[config.authHeader] = token; //inserta en la cabezara el token
             }
             return httpConfig;// envia la req, el Backend se encarga de ver si existe o no

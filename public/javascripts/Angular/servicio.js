@@ -35,12 +35,14 @@ myApp
         // for this demo, we'll store the identity in localStorage. For you, it could be a cookie, sessionStorage, whatever
         //console.log(localStorage);
         if (_identity) {
-          console.log("authenticate() HAY una identidad"  + identity);
-          localStorage.setItem("demo.identity", angular.toJson(identity));
+          console.log("authenticate() HAY una identidad "  + identity);
+          console.log(_authenticated);
+          return _authenticated;
+          //localStorage.setItem("demo.identity", angular.toJson(identity));
 
         }else {
           console.log("authenticate() no hay una identidad en local")
-          localStorage.removeItem("demo.identity");
+          //localStorage.removeItem("demo.identity");
         }
       },
       identity: function(force,username) {
@@ -60,7 +62,7 @@ myApp
         console.log("desde servicio " + _identity);
         if (angular.isDefined(_identity)) {
           deferred.resolve(_identity);
-          console.log("angular.isDefined(_identity) retorna true" + JSON.stringify(_identity));//null
+          console.log("angular.isDefined(_identity) retorna " + JSON.stringify(_identity));//null
           return deferred.promise;
         }
         console.log("from principal 3");

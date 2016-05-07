@@ -2,11 +2,29 @@ doctype html
 html(ng-app='passportLocal')
   head
     title= title
+    base(href='/')
+    meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
+
     link(href='stylesheets/bootstrap.min.css', rel='stylesheet', media='screen')
     link(rel='stylesheet', href='/stylesheets/style.css')
-    base(href='/')
-  body(ng-controller='mainController')
+
+    // This is needed because Facebook login redirects add #_=_ at the end of the URL
+        script(type="text/javascript").
+            if (window.location.href.indexOf('#_=_') > 0) {
+                window.location = window.location.href.replace(/#.*/, '');
+            }
+    
+body(ng-controller='mainController')
+
+.navbar()
+  .navbar-inner
+  .container-fluid
+    ul.nav.nav-tabs
+    li(data-access-level='accessLevels.anon', active-nav)
+      a(href='/login') Log in
+      br
+      a(href='/register') Register
     block content
 
   script(src='javascripts/Angular/libs/jquery.js')

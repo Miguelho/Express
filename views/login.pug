@@ -1,6 +1,17 @@
-extends layout
-
-block content
+doctype html
+html(ng-app='passportLocal')
+head
+    title= title
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(href='stylesheets/bootstrap.min.css', rel='stylesheet', media='screen')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    base(href='/')
+    // This is needed because Facebook login redirects add #_=_ at the end of the URL
+        script(type="text/javascript").
+            if (window.location.href.indexOf('#_=_') > 0) {
+                window.location = window.location.href.replace(/#.*/, '');
+            }
+body(ng-controller='mainController')
   .container 
   h1 Login Page
   br
@@ -13,6 +24,36 @@ block content
     button.btn.btn-default(ng-click="login()") Login
     a(href='/') 
       button.btn.btn-primary(type='button') Volver
-      
-    div(ui-view)
-    p {{serverResponse}}
+
+  div(ui-view)
+
+
+hr
+p ... or use one of them fancy social logins:
+.btn-group
+    a.btn.btn-default(href="", data-ng-click="loginOauth('facebook')")
+        i.fa.fa-facebook-square
+        |  Facebook
+    a.btn.btn-default(href="", data-ng-click="loginOauth('twitter')")
+        i.fa.fa-twitter
+        |  Twitter
+    a.btn.btn-default(href="", data-ng-click="loginOauth('google')")
+        i.fa.fa-google-plus-square
+        |  Google
+    a.btn.btn-default(href="", data-ng-click="loginOauth('linkedin')")
+        i.fa.fa-linkedin
+        |  LinkedIn
+
+script(src='javascripts/Angular/libs/jquery.js')
+script(src='javascripts/Angular/libs/bootstrap.min.js')
+script(src='javascripts/Angular/libs/angular.min.js')  
+script(src='http://angular-ui.github.io/ui-router/release/angular-ui-router.js')
+script(src='javascripts/Angular/libs/angular-route.js')
+script(src='javascripts/Angular/libs/satellizer.js')
+script(src='javascripts/Angular/libs/angular-storage.js')
+script(src='javascripts/Angular/core.js')
+script(src='javascripts/Angular/routingConfig.js')
+script(src='javascripts/Angular/config.js')
+script(src='javascripts/Angular/controllers/LoginController.js')
+script(src='javascripts/Angular/servicio.js')
+script(src='javascripts/Angular/authorization.js')

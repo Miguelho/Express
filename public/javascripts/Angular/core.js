@@ -10,7 +10,7 @@ app.run(['$rootScope','$state','$auth','servicio','authorization',function ($roo
         // if the principal is resolved, do an authorization check immediately. otherwise,
         // it'll be done when the state it resolved.
         if (servicio.isIdentityResolved()){    
-            console.log("Identidad " + toState.name);
+            console.log("Identidad " + toState.name);   
             return;
         }else{
             console.log("Identidad no resuelta aún");
@@ -40,11 +40,12 @@ app.run(['$rootScope','$state','$auth','servicio','authorization',function ($roo
 }]);
 
 //app.controller() para la conexión entre nuestros servicios y la vista HTML
-app.controller('mainController',function($scope,$http,$location,$window,$state){
+app.controller('mainController',function($scope,$http,$location,$window,$state,$rootScope){
 	$scope.formData={};
     $scope.authors={};
     $scope.serverResponse=String("");
     console.log("mainController loaded");
+    $rootScope.estado=$state.is('user');
 
     function getDataFromRegisterForm(){
         var data = ({username:$scope.username,

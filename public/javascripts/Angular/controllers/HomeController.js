@@ -8,8 +8,12 @@ myApp.controller('HomeController',function($scope,$http){
 		method:'GET',
 		url:'/user/listUsers'
 	}).then(function onSuccess(response){
-		$scope.message=response;
+		var responseData = response.data; // Recibe la respuesta del servidor y guarda el campo data que es el que nos interesa
+		$scope.users=responseData; //Lo meto en una variable users para mostrar la tabla en angular
+
 	}).catch(function onError(err){
-		$scope.message=err;
+		$scope.message=err.message;
 	});
+
+	
 });		

@@ -53,8 +53,8 @@ var access = routingConfig.accessLevels;
             template: "<ui-view/>"
         })
         .state('user.home', {
-            url: '/home',
-            redirectTo:'/home',
+            //url: '/home',
+            controller: 'HomeController',
             templateUrl: 'home'
         })
         .state('user.private', {
@@ -111,7 +111,7 @@ var access = routingConfig.accessLevels;
                 token = config.authHeader === "Authorization" ? 'Bearer ' + token : token;
 
                 httpConfig.headers[config.authHeader] = token; //inserta en la cabezara el token
-                console.log(httpConfig.headers['Authorization']);
+                console.log("REQUEST AUTHORIZATION ON")
             }
             return httpConfig;// envia la req, el Backend se encarga de ver si existe o no
             },
@@ -153,7 +153,7 @@ var access = routingConfig.accessLevels;
     $authProvider.signupAdminUrl= "http://localhost:3000/admin/register";//rutas al server
     $authProvider.tokenName= "token";//Nombre del token
     $authProvider.tokenPrefix= "passportLocal";//Añade prefijo para diferenciar LocalStorage de otros. En LocalStorage: token_passportLocal
-    $authProvider.authHeader = 'authorization';
+    $authProvider.authHeader = "authorization";
     $authProvider.authToken = 'Bearer';
 
 

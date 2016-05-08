@@ -19,8 +19,8 @@ exports.emailSignup= function(req,res,next){
 		});
 	};
 
-exports.emailLogin= function(req,res,next){
-	console.log(req.headers);
+exports.emailLogin= function(req,res){
+	console.log("emailLogin :. "+ req.headers.authorization);
 	//passport.authenticate('local',{ successRedirect: '/', failureRedirect: '/login' }, function(req, res, next) {
 	passport.authenticate('local', function(err, user) {
 		if (err) {
@@ -31,11 +31,12 @@ exports.emailLogin= function(req,res,next){
 			return res.status(401).send({message:"errorRRR!"});
 		}else{
 			console.log("logeado");
-    		return res.status(200).send({token:service.createToken(Account)})
+    		//next();
+    		res.send({token:service.createToken(Account)})
     		
 		}
     	//res.status(201).send({redirect:'/ping'}
-	})(req, res);;
+	})(req, res);
 };
 
 // Crear un nuevo controller middleware que es usado para autorizar una operación article 

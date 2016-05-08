@@ -26,7 +26,6 @@ body(ng-controller='mainController')
       button.btn.btn-primary(type='button') Volver
 
   div(ui-view)
-  span(ng-bind="estado")
 
 hr
 p ... or use one of them fancy social logins:
@@ -47,14 +46,19 @@ p ... or use one of them fancy social logins:
 script(src='javascripts/Angular/libs/jquery.js')
 script(src='javascripts/Angular/libs/bootstrap.min.js')
 script(src='javascripts/Angular/libs/angular.min.js')  
-script(src='http://angular-ui.github.io/ui-router/release/angular-ui-router.js')
+script(src='javascripts/Angular/libs/angular-ui-router/release/angular-ui-router.min.js')  
 script(src='javascripts/Angular/libs/angular-route.js')
 script(src='javascripts/Angular/libs/satellizer.js')
+script(src='javascripts/Angular/libs/angular-animate/angular-animate.js')  
+script(type="text/javascript" src='javascripts/Angular/libs/angular-toastr.tpls.js')  
 script(src='javascripts/Angular/libs/angular-storage.js')
 script(src='javascripts/Angular/core.js')
 script(src='javascripts/Angular/routingConfig.js')
 script(src='javascripts/Angular/config.js')
-script(src='javascripts/Angular/controllers/LoginController.js')
 script(src='javascripts/Angular/controllers/HomeController.js')
+script(src='javascripts/Angular/controllers/IndexController.js')
+script(src='javascripts/Angular/controllers/RegisterController.js')
+script(src='javascripts/Angular/controllers/LoginController.js')
+script(src='javascripts/Angular/controllers/LogoutController.js')
 script(src='javascripts/Angular/servicio.js')
 script(src='javascripts/Angular/authorization.js')

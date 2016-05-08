@@ -1,6 +1,6 @@
 var myApp= angular.module('passportLocal');
 
-myApp.controller('LogoutController',function($scope,$auth,$state){//Servicio que recoja datos del formu
+myApp.controller('LogoutController',function($scope,$auth,$state,toastr){//Servicio que recoja datos del formu
 	$scope.isAuthenticated = function(){
         return $auth.isAuthenticated();
         
@@ -17,7 +17,7 @@ myApp.controller('LogoutController',function($scope,$auth,$state){//Servicio que
             //$window.location.href=url;
         })
     }else{
-        toaster.error("something went wrong");
+        toastr.error("something went wrong");
         return;
     }
     };

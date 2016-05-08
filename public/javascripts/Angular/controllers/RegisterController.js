@@ -1,6 +1,6 @@
 var myApp= angular.module('passportLocal');
 
-myApp.controller('RegisterController',function($auth,$location,$rootScope,$scope){
+myApp.controller('RegisterController',function($auth,$location,$rootScope,$scope,$state){
 	console.log("RegisterController loaded");
     var vm = this;
 
@@ -18,14 +18,14 @@ myApp.controller('RegisterController',function($auth,$location,$rootScope,$scope
         $auth.setToken(response);
         $state.go('user.home');
     }).catch(function(response){
-        toaster.error(response.data.message);
+        //toastr.error(response.data.message);
     })
     }else{
     $auth.signup(user)//$auth.signup por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor
         .then(function(response){
         $auth.setToken(response.data.token); // Guarda en localStorage el token recibido del servidor
     }).catch(function(response){
-        toaster.error(response.data.message);
+        //toastr.error(response.data.message);
     });
     }
    

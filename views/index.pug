@@ -12,7 +12,7 @@ block content
        a(href='/register') Register
      ul.nav.nav-tabs(ng-if="isAuthenticated()")
        button.btn.btn-default(ng-click="logout()") Log out
-       a(ui-sref='user.home') Dashboard
+       a(ui-sref='user.home({name:"Miguel"})') Dashboard #name
 
 
   div(ng-controller='IndexController')

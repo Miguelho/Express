@@ -1,11 +1,11 @@
 var myApp= angular.module('passportLocal');
 
-myApp.controller('LoginController',function($auth,$rootScope,$scope,$state,$http,$location,$window){//Servicio que recoja datos del formu
+myApp.controller('LoginController',function($auth,$rootScope,$scope,$state,$http,$location,$window,toastr){
 	console.log("loginController loaded");
+    
     $rootScope.estado=$rootScope.toState;
+
     $rootScope.login=function(){ //funciones que se utilizan desde las vistas
-    //console.log("Logeando....");
-    //$state.go('user.home');
     $auth.login({//$auth.login por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor cuando se autentica o realiza HTTP
         username:$scope.username,
         password:$scope.password
@@ -14,18 +14,11 @@ myApp.controller('LoginController',function($auth,$rootScope,$scope,$state,$http
             console.log("logeado!");
             var url = "http://" + $window.location.host + "/"; //el servicio $window permite el redireccionamiento a una nueva página
             $window.location.href=url;
-                $http({
-                    method:'GET',
-                    url:'/'
-                }).then(function success(response){
-                    console.log("una vez que ya estoy autorizado, pido la pagina home");
-                    $rootScope.$state=$state.go('user.home');
-                }).catch(function(response){
-                    console.log("algo habrá pasado...");
-                });
+            $rootScope.$state=$state.go('user.home');
         })
     .catch(function(response){
-        //$state.go('anon.login');
+        $rootScope.$state=$state.go('anon.login');
+        toastr.error('No existe este usuario', 'Error');
         
     });
     }

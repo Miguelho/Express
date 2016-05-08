@@ -1,11 +1,10 @@
 'use strict';
-var app= angular.module('passportLocal', ['ui.router','satellizer']);
+var app= angular.module('passportLocal', ['ui.router','satellizer','toastr']);
 
 //app.run carga los servicios personalizados
-app.run(['$rootScope','$state','$auth','servicio','authorization',function ($rootScope, $state,$auth,servicio,authorization) {
-  $rootScope.$on('$stateChangeStart', function ($state,event, toState, toStateParams) {
+app.run(['$rootScope','$state','servicio','authorization',function ($rootScope, $state,servicio,authorization) {
+  $rootScope.$on('$stateChangeStart', function ($state,toState, toStateParams) {
     // track the state the user wants to go to; authorization service needs this
-        //console.log("stateChangeStart " +$rootScope.$state.is('user'));
         $rootScope.toState = toState;
         $rootScope.toStateParams = toStateParams;
         // if the principal is resolved, do an authorization check immediately. otherwise,
@@ -15,38 +14,19 @@ app.run(['$rootScope','$state','$auth','servicio','authorization',function ($roo
             return;
         }else{
             console.log("Identidad no resuelta aún");
-            //event.preventDefault();
             authorization.authorize("Miguel");
         }
-    /*var requiredLogin = false;
-      // check if this state need login
-      if (toState.data && toState.data.requiredLogin)
-        requiredLogin = true;
-      
-      // if yes and if this user is not logged in, redirect him to login page
-      if (requiredLogin && !$auth.isAuthenticated()) {
-        event.preventDefault();
-        $state.go('login');
-      }*/
-
-    /*if (!AuthService.isAuthenticated()) {
-      console.log(next.name);
-      if (next.name !== 'outside.login' && next.name !== 'outside.register') {
-        event.preventDefault();
-        $state.go('outside.login');
-      }
-    }*/
   });
 
 }]);
 
 //app.controller() para la conexión entre nuestros servicios y la vista HTML
-app.controller('mainController',function($scope,$http,$location,$window,$state,$rootScope){
+app.controller('mainController',function($scope,$http,$location,$window,$state,$rootScope,toastr){
 	$scope.formData={};
     $scope.authors={};
     $scope.serverResponse=String("");
     console.log("mainController loaded");
-    //$rootScope.estado=$state.is('user.home');
+    toastr.success( 'Bienvenido!','GeoData');
 
     function getDataFromRegisterForm(){
         var data = ({username:$scope.username,
@@ -77,9 +57,6 @@ app.controller('mainController',function($scope,$http,$location,$window,$state,$
             console.log('Error: ' + data);
         });
     };
-
-    // $scope.refresh();
-
     $scope.refreshAutores=function(){
         authors={"nombre":"pene"};
         $scope.serverResponse="IT GIRL";

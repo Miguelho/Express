@@ -56,6 +56,9 @@ var access = routingConfig.accessLevels;
             url: '/',
             controller: 'HomeController',
             templateUrl: "home",
+            params:{
+                name:null
+            },
             resolve: {
              loginRequired: loginRequired
             }

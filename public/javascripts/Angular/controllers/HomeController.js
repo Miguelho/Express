@@ -17,11 +17,12 @@ myApp.controller('HomeController',function($scope,$http){
 
 
 	$scope.delete=function(user){
+		var indexUser= $scope.users.indexOf(user)
 		$http({
 			method:'DELETE',
-			url:'/user/' +user['_id'] 
+			url:'/user/' +user['_id']
 		}).then(function onSuccess(response){
-			console.log("Usuario borrado " + $scope.users.shift());
+			console.log("Usuario borrado " + $scope.users.splice(indexUser,1));
 			$scope.users=$scope.users;
 		})
 	}

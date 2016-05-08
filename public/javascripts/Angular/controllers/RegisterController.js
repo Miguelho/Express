@@ -29,6 +29,6 @@ myApp.controller('RegisterController',function($auth,$location,$rootScope,$scope
     });
     }
    
-    console.log("se registró como " + rol)
+    console.log("se registró como " + rol);
     }
 });	

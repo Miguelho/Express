@@ -12,6 +12,8 @@ block content
       tr(ng-repeat="user in users")
        td {{user._id}}
        td {{user.username}}
+       td#botonera_tablaUsuarios(ng-click="delete(user)") Borrar
+       td#botonera_tablaUsuarios Editar
   
 
 

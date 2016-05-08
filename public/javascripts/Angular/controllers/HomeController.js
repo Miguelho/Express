@@ -3,7 +3,7 @@ var myApp= angular.module('passportLocal');
 myApp.controller('HomeController',function($scope,$http){
 	console.log("HomeController ejecutado");
 	$scope.message=String("Home controller ejecutado");
-
+	$scope.users="";
 	$http({
 		method:'GET',
 		url:'/user/listUsers'
@@ -15,5 +15,14 @@ myApp.controller('HomeController',function($scope,$http){
 		$scope.message=err.message;
 	});
 
-	
+
+	$scope.delete=function(user){
+		$http({
+			method:'DELETE',
+			url:'/user/' +user['_id'] 
+		}).then(function onSuccess(response){
+			console.log("Usuario borrado " + $scope.users.shift());
+			$scope.users=$scope.users;
+		})
+	}
 });		

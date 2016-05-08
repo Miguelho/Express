@@ -16,8 +16,9 @@ router.route('/listUsers')
 	.get(middleware.ensureAuthenticated,UserCtrl.listUsers);
 
 //router.route('/user/:_id')
-router.route('/:username')
+router.route('/:_id')
 	.get(middleware.ensureAuthenticated,UserCtrl.getIdByUsername)
+	.delete(middleware.ensureAuthenticated,UserCtrl.deleteUser);
 
 
 module.exports = router;

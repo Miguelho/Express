@@ -31,3 +31,17 @@ exports.listUsers = function(req,res,next){
 
 		});
 	};
+
+
+//params
+exports.deleteUser = function(req,res,next){
+	if(!req.params._id) return res.status(400).json({message:"Por favor,rellena el campo nombre"});
+	console.log(req);
+	var idUsuario=req.params._id;
+	console.log("Borrando a "+ idUsuario);
+	Account.remove({'_id': idUsuario},function(err,data){
+		if (err) return err;
+		if (data!== null)
+			res.json({message: 'Se ha borrado correctamente'});
+	});
+};

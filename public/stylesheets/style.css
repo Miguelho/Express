@@ -12,6 +12,8 @@ a {
 	float:right;
 }
 .tablaUsuarios:hover{
-	background-color: #aaaaaa
-
+	background-color: #cecece
 }
+#botonera_tablaUsuarios:hover{
+	background-color: green
+};

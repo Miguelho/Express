@@ -12,11 +12,13 @@ block content
        a(href='/register') Register
      ul.nav.nav-tabs(ng-if="isAuthenticated()")
        button.btn.btn-default(ng-click="logout()") Log out
+       a(ui-sref='user.home') Dashboard
 
 
   div(ng-controller='IndexController')
-  h1 Bienvenido a GeoData
-  p aqui estamos testeando
+   h1 Bienvenido a GeoData
+   p aqui estamos testeando
 
   div(ng-bind="estado")
-  a(ui-sref='user.home') Dashboard
+  div(ng-if="isAuthenticated()")
+  div(ui-view)

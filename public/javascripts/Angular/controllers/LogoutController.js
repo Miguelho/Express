@@ -11,8 +11,9 @@ myApp.controller('LogoutController',function($scope,$auth,$state){//Servicio que
         $auth.logout()
         .then(function() {
             //var url = "http://" + $window.location.host + "/";
-            $state.go('logout');
-            toaster.info("you have logged out");
+            $state.go('anon.login');
+            console.log("desconectado");
+            //toaster.info("you have logged out");
             //$window.location.href=url;
         })
     }else{

@@ -1,6 +1,6 @@
 var myApp= angular.module('passportLocal');
 
-myApp.controller('LoginController',function($auth,$rootScope,$scope,$state,$http,$location){//Servicio que recoja datos del formu
+myApp.controller('LoginController',function($auth,$rootScope,$scope,$state,$http,$location,$window){//Servicio que recoja datos del formu
 	console.log("loginController loaded");
     $rootScope.estado=$rootScope.toState;
     $rootScope.login=function(){ //funciones que se utilizan desde las vistas
@@ -12,14 +12,14 @@ myApp.controller('LoginController',function($auth,$rootScope,$scope,$state,$http
      }).then(
         function(response){
             console.log("logeado!");
-            //var url = "http://" + $window.location.host + "/home"; //el servicio $window permite el redireccionamiento a una nueva página
-            //$window.location.href=url;
+            var url = "http://" + $window.location.host + "/"; //el servicio $window permite el redireccionamiento a una nueva página
+            $window.location.href=url;
                 $http({
                     method:'GET',
-                    url:'/home'
+                    url:'/'
                 }).then(function success(response){
                     console.log("una vez que ya estoy autorizado, pido la pagina home");
-                    $state.go('user.home');
+                    $rootScope.$state=$state.go('user.home');
                 }).catch(function(response){
                     console.log("algo habrá pasado...");
                 });

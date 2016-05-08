@@ -19,3 +19,15 @@ exports.getIdByUsername = function(req,res,next){
 
 		});
 	};
+
+exports.listUsers = function(req,res,next){
+		console.log("Serve users list");
+		Account.find({},function(err,data){
+			if(err)
+				res.send(err.message);
+			else{
+				res.status(200).json(data);
+			}
+
+		});
+	};

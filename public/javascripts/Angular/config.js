@@ -53,9 +53,12 @@ var access = routingConfig.accessLevels;
             template: "<ui-view/>"
         })
         .state('user.home', {
-            //url: '/home',
+            url: '/',
             controller: 'HomeController',
-            templateUrl: 'home'
+            templateUrl: "home",
+            resolve: {
+             loginRequired: loginRequired
+            }
         })
         .state('user.private', {
             abstract: true,

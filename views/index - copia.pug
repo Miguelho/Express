@@ -1,0 +1,10 @@
+extends layout
+
+block content
+
+  div(ng-controller='IndexController')
+  h1 Bienvenido a GeoData
+  p aqui estamos testeando
+
+  span(ng-bind="estado")
+  a(ui-sref='user.home') Dashboard

@@ -32,12 +32,18 @@ var access = routingConfig.accessLevels;
         .state('anon.login', {
             //url: '/login/',
             template: '<h1>Has de logeartee!</h1>',
-            controller: 'LoginCtrl'
+            controller: 'LoginController',
+            resolve: {
+             skipIfLoggedIn: skipIfLoggedIn
+            }
         })
         .state('anon.register', {
             url: '/register/',
             templateUrl: 'register',
-            controller: 'RegisterCtrl'
+            controller: 'RegisterCtrl',
+            resolve: {
+            skipIfLoggedIn: skipIfLoggedIn
+            }
         });
 
     // Regular user routes
@@ -86,44 +92,7 @@ var access = routingConfig.accessLevels;
             templateUrl: 'admin',
             controller: 'AdminCtrl'
         });
-    /*$stateProvider
-        .state('site', {
-            abstract: true,
-            resolve: {
-                authorize: ['authorization',
-                function(authorization) {
-                    return authorization.authorize();
-            }
-            ]},
-            template: '<div ui-view />'
-    })
-        .state('home', {
-    parent:'site',
-    url: "/",
-    data: {requiredLogin: true},
-    controller:'HomeController'
-    })
-        .state('outside',{
-    abstract: true,
-
-    })
-        .state('login', {
-    url: '/loginpolla',
-    //templateUrl: 'templates/login.html',
-    controller: 'LoginController',
-    controllerAs: "login"
-    })
-        .state('register', {
-    url: '/register',
-    //templateUrl: 'templates/register.html',
-    controller: 'RegisterController',
-    controllerAs:'register'
-    })
-        .state('logout', {
-    url: '/logout',
-    templateUrl:null,
-    controller:"LogoutController"
-    });*/
+    
 
     //$urlRouterProvider.otherwise('/');
 
@@ -139,8 +108,10 @@ var access = routingConfig.accessLevels;
             var token = localStorage.getItem(tokenName); //Accede al almacenamiento local para recoger el token JWT
             //alert(config)
             if(token && config.httpInterceptor){
-                token = config.authHeader === "'Authorization'" ? 'Bearer ' + token : token;
+                token = config.authHeader === "Authorization" ? 'Bearer ' + token : token;
+
                 httpConfig.headers[config.authHeader] = token; //inserta en la cabezara el token
+                console.log(httpConfig.headers['Authorization']);
             }
             return httpConfig;// envia la req, el Backend se encarga de ver si existe o no
             },
@@ -173,10 +144,37 @@ var access = routingConfig.accessLevels;
         };
     });
 
+
+    $authProvider.facebook({
+      clientId: '657854390977827'//cambiar con mi clientID
+    });
     $authProvider.loginUrl= "http://localhost:3000/login";//rutas al server
     $authProvider.signupUrl= "http://localhost:3000/register";//rutas al server
     $authProvider.signupAdminUrl= "http://localhost:3000/admin/register";//rutas al server
     $authProvider.tokenName= "token";//Nombre del token
     $authProvider.tokenPrefix= "passportLocal";//Añade prefijo para diferenciar LocalStorage de otros. En LocalStorage: token_passportLocal
-    $authProvider.authHeader = 'Authorization';
+    $authProvider.authHeader = 'authorization';
+    $authProvider.authToken = 'Bearer';
+
+
+
+    function skipIfLoggedIn($q, $auth) {
+      var deferred = $q.defer();
+      if ($auth.isAuthenticated()) {
+        deferred.reject();
+      } else {
+        deferred.resolve();
+      }
+      return deferred.promise;
+    }
+
+    function loginRequired($q, $location, $auth) {
+      var deferred = $q.defer();
+      if ($auth.isAuthenticated()) {
+        deferred.resolve();
+      } else {
+        $location.path('/login');
+      }
+      return deferred.promise;
+    }
 }]);

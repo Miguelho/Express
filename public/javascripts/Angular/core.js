@@ -3,18 +3,19 @@ var app= angular.module('passportLocal', ['ui.router','satellizer']);
 
 //app.run carga los servicios personalizados
 app.run(['$rootScope','$state','$auth','servicio','authorization',function ($rootScope, $state,$auth,servicio,authorization) {
-  $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams) {
+  $rootScope.$on('$stateChangeStart', function ($state,event, toState, toStateParams) {
     // track the state the user wants to go to; authorization service needs this
+        //console.log("stateChangeStart " +$rootScope.$state.is('user'));
         $rootScope.toState = toState;
         $rootScope.toStateParams = toStateParams;
         // if the principal is resolved, do an authorization check immediately. otherwise,
         // it'll be done when the state it resolved.
         if (servicio.isIdentityResolved()){    
-            console.log("Identidad " + toState.name);   
+            console.log("Identidad " + toState.name);  
             return;
         }else{
             console.log("Identidad no resuelta aún");
-            event.preventDefault();
+            //event.preventDefault();
             authorization.authorize("Miguel");
         }
     /*var requiredLogin = false;
@@ -45,7 +46,7 @@ app.controller('mainController',function($scope,$http,$location,$window,$state,$
     $scope.authors={};
     $scope.serverResponse=String("");
     console.log("mainController loaded");
-    $rootScope.estado=$state.is('user');
+    //$rootScope.estado=$state.is('user.home');
 
     function getDataFromRegisterForm(){
         var data = ({username:$scope.username,
@@ -96,4 +97,6 @@ app.controller('mainController',function($scope,$http,$location,$window,$state,$
         });
     };
 
+
+     
 });

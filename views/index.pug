@@ -1,9 +1,22 @@
-extends layout
+extends layout.pug
 
 block content
+  header
+  .navbar
+   .navbar-inner
+    .container-fluid(ng-controller='LogoutController')
+     ul.nav.nav-tabs(ng-if="!isAuthenticated()")
+      li(data-access-level='accessLevels.anon', active-nav)
+       a(href='/login') Log in
+      li(data-access-level='accessLevels.anon', active-nav)
+       a(href='/register') Register
+     ul.nav.nav-tabs(ng-if="isAuthenticated()")
+       button.btn.btn-default(ng-click="logout()") Log out
+
+
   div(ng-controller='IndexController')
   h1 Bienvenido a GeoData
   p aqui estamos testeando
 
-  span(ng-bind="estado")
+  div(ng-bind="estado")
   a(ui-sref='user.home') Dashboard

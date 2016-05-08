@@ -26,6 +26,8 @@ form.form-horizontal(ng-submit="signup()", name="registerForm", role="form")
     .form-group
         .controls
             button.btn(type="submit", data-ng-disabled="registerForm.$invalid") Submit
+            a(href='/') 
+              button.btn.btn-primary(type='button') Volver
 
     .alert.alert-danger(ng-show="registerForm.$invalid && registerForm.$dirty")
         strong Please correct the following errors:

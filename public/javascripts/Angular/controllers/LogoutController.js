@@ -1,17 +1,23 @@
 var myApp= angular.module('passportLocal');
 
-myApp.controller('LogoutController',function($scope,$auth,$window){//Servicio que recoja datos del formu
+myApp.controller('LogoutController',function($scope,$auth,$state){//Servicio que recoja datos del formu
 	$scope.isAuthenticated = function(){
-        $auth.isAuthenticated();
+        return $auth.isAuthenticated();
+        
     };
+
+    $scope.logout=function(){
     if($scope.isAuthenticated()){
         $auth.logout()
         .then(function() {
-            var url = "http://" + $window.location.host + "/";
+            //var url = "http://" + $window.location.host + "/";
             $state.go('logout');
-            $window.location.href=url;
+            toaster.info("you have logged out");
+            //$window.location.href=url;
         })
-        .catch(function(){
-        });
+    }else{
+        toaster.error("something went wrong");
+        return;
     }
+    };
 });		

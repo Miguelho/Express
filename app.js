@@ -12,9 +12,27 @@ var LocalStrategy = require('passport-local').Strategy;
 var mongoose=require('mongoose');
 //Tokens tokens everywhere
 var cors = require('cors');
+var config = require ('./config.js');
+
+var resolveCrossDomain = function(req, res,next) {
+
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Credentials", true);
+
+    if ('OPTIONS' == req.method) {
+        res.send(200);
+    }
+    else {
+        next();
+    }
+}; 
+
+
 
 var app = express();
-
+app.use(resolveCrossDomain);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -45,7 +63,7 @@ app.use('/admin', admin);
 //mongoose
 //var dbConnectionString= String('mongodb://194.140.7.171:27017/prueba');
 var dbConnectionString= String('mongodb://localhost:27017/prueba');
-mongoose.connect(dbConnectionString);
+mongoose.connect(config.MONGO_URI);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

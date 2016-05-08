@@ -16,6 +16,7 @@ myApp.controller('RegisterController',function($auth,$location,$rootScope,$scope
     $auth.signupAdmin(user)//$auth.signup por debajo introducen en la cabecera HTTP el token de autenticación que se recibe del servidor
         .then(function(response){
         $auth.setToken(response);
+        $state.go('user.home');
     }).catch(function(response){
         toaster.error(response.data.message);
     })

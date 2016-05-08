@@ -6,7 +6,9 @@ var middleware= module.exports;
 
 middleware.ensureAuthenticated= function(req,res,next){
 	//res.headers.authorization = aprox: Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbsciOiJIUzI1NiJ9.eyJzdWIiOiIWeRtU2ZWMyYjUyNjgxNzE2YmXiNzAxMzIiLCJpYXQiOjE0Mj10MjA0OTEsImV4cCI6MTQy67YzMDA5MX0.IH7ek7Rp_WQJvXeOd8zrBIpeFi4W6kUi_6htmaxv7Ow
-	if(!req.headers.authorization){ //se comprueba si la cabecera lleva autorización. ( esto lo envía el front end)
+	
+  console.log(req.header);
+  if(!req.headers.authorization){ //se comprueba si la cabecera lleva autorización. ( esto lo envía el front end)
 		console.log("req user " +req.user);
 		return res.status(403).send({message:"No tienes la cabecera de autenticación"});
 	}

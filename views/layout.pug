@@ -16,17 +16,9 @@ html(ng-app='passportLocal')
                 window.location = window.location.href.replace(/#.*/, '');
             }
     
-body(ng-controller='mainController')
+  body(ng-controller='mainController')
 
-.navbar()
-  .navbar-inner
-  .container-fluid
-    ul.nav.nav-tabs
-    li(data-access-level='accessLevels.anon', active-nav)
-      a(href='/login') Log in
-      br
-      a(href='/register') Register
-    block content
+  block content
 
   script(src='javascripts/Angular/libs/jquery.js')
   script(src='javascripts/Angular/libs/bootstrap.min.js')
@@ -44,6 +36,7 @@ body(ng-controller='mainController')
   script(src='javascripts/Angular/controllers/IndexController.js')
   script(src='javascripts/Angular/controllers/RegisterController.js')
   script(src='javascripts/Angular/controllers/LoginController.js')
+  script(src='javascripts/Angular/controllers/LogoutController.js')
   script(src='javascripts/Angular/servicio.js')
   script(src='javascripts/Angular/authorization.js')
 
